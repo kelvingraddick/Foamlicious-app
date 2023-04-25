@@ -93,7 +93,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.foamlicious"
+    namespace "com.wavelinkllc.foamlicious"
     defaultConfig {
         applicationId "com.wavelinkllc.foamlicious"
         minSdkVersion rootProject.ext.minSdkVersion

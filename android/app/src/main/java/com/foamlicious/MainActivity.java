@@ -1,4 +1,4 @@
-package com.foamlicious;
+package com.wavelinkllc.foamlicious;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

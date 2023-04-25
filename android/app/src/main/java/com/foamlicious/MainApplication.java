@@ -1,4 +1,4 @@
-package com.foamlicious;
+package com.wavelinkllc.foamlicious;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
