@@ -2,9 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { ApplicationContext } from '../ApplicationContext';
-import { filters } from '../constants/filters';
+import SmallShoeView from '../components/SmallShoeView';
 import { colors } from '../constants/colors';
-import { sorts } from '../constants/sorts';
 import { months } from '../constants/months';
 
 const ShoeScreen = ({route, navigation}) => {
@@ -12,13 +11,18 @@ const ShoeScreen = ({route, navigation}) => {
 
   const { shoes, isShoesLoading, loadShoes } = useContext(ApplicationContext);
 
-  const [shoe, setShoe] = useState([]);
+  const [shoe, setShoe] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [suggestedShoes, setSuggestedShoes] = useState([]);
 
   useEffect(() => {
     let currentShoe = shoes.find(shoe => shoe.id === id);
     setShoe(currentShoe);
     navigation.setOptions({ headerTitle: currentShoe.name });
+
+    let currentSuggestedShoes = shoes.filter(shoe => shoe.category_1 == currentShoe.category_1);
+    currentSuggestedShoes = currentSuggestedShoes.sort(() => 0.5 - Math.random()).slice(0, 3); // random top 3
+    setSuggestedShoes(currentSuggestedShoes);
   }, [shoes]);
 
   const getImageUrls = () => {
@@ -46,7 +50,7 @@ const ShoeScreen = ({route, navigation}) => {
             }
             <View style={styles.monthYearView}>
               <Text style={styles.monthYearLabel}>
-                {months[new Date(shoe.date).getMonth()]}{"\n"}
+                { shoe.hide_month === '0' ? months.short[new Date(shoe.date).getMonth()] + '\n' : ''}
                 {new Date(shoe.date).getFullYear()}
               </Text>
             </View>
@@ -85,6 +89,9 @@ const ShoeScreen = ({route, navigation}) => {
             <Text style={styles.buttonViewLabel}>ADD TO CALENDAR</Text>
           </Pressable>
           <Text style={styles.suggestedLabel}>Suggested</Text>
+          {suggestedShoes.map((suggestedShoe, index) => {
+            return (<SmallShoeView shoe={suggestedShoe} />)
+          })}
         </>
       }
       { isShoesLoading &&
