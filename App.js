@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ApplicationContext } from './ApplicationContext';
 import ReleasesScreen from './screens/ReleasesScreen';
 import SearchScreen from './screens/SearchScreen';
+import ShoeScreen from './screens/ShoeScreen';
 import { colors } from './constants/colors';
 
 const initalState = {
@@ -35,14 +36,6 @@ const TABS = {
   NEWS: 'NEWS',
   FAVORITES: 'FAVORITES',
   SETTINGS: 'SETTINGS',
-}
-
-function ShoeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Shoe Screen</Text>
-    </View>
-  );
 }
 
 function NewsScreen() {
@@ -150,6 +143,8 @@ export default function App() {
           initialRouteName="TabbedScreen"
           screenOptions={{
             headerTitleStyle: styles.headerTitle,
+            headerBackTitleVisible: false,
+            headerTintColor: colors.darkGray,
           }}
         >
           <Stack.Screen name="TabbedScreen" component={TabbedScreen} options={{ headerShown: false }} />

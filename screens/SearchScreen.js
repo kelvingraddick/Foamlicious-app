@@ -11,8 +11,6 @@ const SearchScreen = ({navigation}) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerBackTitleVisible: false,
-      headerTintColor: colors.darkGray,
       headerRight: () => (
         <Pressable onPress={onScanButtonPressed}>
           {() => (<Image source={require('../assets/images/barcode.png')} style={styles.headerIcon} />)}
@@ -22,7 +20,6 @@ const SearchScreen = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    console.log("query: " + query);
     let matchingShoes = shoes.filter(shoe => { return shoe.name.toLowerCase().includes(query) || shoe.description.toLowerCase().includes(query) || shoe.color.toLowerCase().includes(query); });
     matchingShoes.sort((a, b) => new Date(b.date) - new Date(a.date)); // descending
     setResults(matchingShoes);

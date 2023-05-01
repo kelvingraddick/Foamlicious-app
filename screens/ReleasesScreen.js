@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Dimensions, FlatList, Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { ApplicationContext } from '../ApplicationContext';
 import { filters } from '../constants/filters';
@@ -49,7 +49,7 @@ const ReleasesScreen = ({navigation}) => {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.shoeView}>
+      <TouchableOpacity style={styles.shoeView} onPress={() => { navigation.navigate('SHOE', { id: item.id }); }}>
         <ImageBackground source={{ uri: 'http://www.wavelinkllc.com/foamlife' + item.image_url_1 }} resizeMode="contain" style={styles.backgroundImage}>
           <View style={styles.headerView}>
             <View style={styles.nameView}>
@@ -74,7 +74,7 @@ const ReleasesScreen = ({navigation}) => {
             <Image source={require('../assets/images/arrow_right.png')} style={styles.moreButtonImage} />
           </View>
         </ImageBackground>
-      </View>
+      </TouchableOpacity>
     );
   };
 
