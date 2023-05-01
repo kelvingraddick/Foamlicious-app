@@ -64,7 +64,7 @@ const ReleasesScreen = ({navigation}) => {
               }
               <View style={styles.monthYearView}>
                 <Text style={styles.monthYearLabel}>
-                  {months[new Date(item.date).getMonth()]}{"\n"}
+                  { item.hide_month === '0' ? months[new Date(item.date).getMonth()] + '\n' : ''}
                   {new Date(item.date).getFullYear()}
                 </Text>
               </View>
