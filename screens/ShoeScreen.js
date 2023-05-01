@@ -26,7 +26,7 @@ const ShoeScreen = ({route, navigation}) => {
   }, [shoes]);
 
   const getImageUrls = () => {
-    return shoe ? [shoe.image_url_1, shoe.image_url_1, shoe.image_url_1] : [];
+    return shoe ? [shoe.image_url_1, shoe.image_url_2, shoe.image_url_3] : [];
   };
 
   const getNumberOfImages = () => {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   suggestedLabel: {
-    marginVertical: 20,
+    marginTop: 20,
     marginHorizontal: 15,
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
