@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ApplicationContext } from './ApplicationContext';
 import ReleasesScreen from './screens/ReleasesScreen';
+import NewsScreen from './screens/NewsScreen';
 import SearchScreen from './screens/SearchScreen';
 import ShoeScreen from './screens/ShoeScreen';
 import { colors } from './constants/colors';
@@ -36,19 +37,6 @@ const TABS = {
   NEWS: 'NEWS',
   FAVORITES: 'FAVORITES',
   SETTINGS: 'SETTINGS',
-}
-
-function NewsScreen() {
-  const navigation = useNavigation();
-  return (
-    <View style={styles.container}>
-      <Text>News Screen</Text>
-      <Button
-        title="Go to SHOE Screen"
-        onPress={() => { navigation.navigate('SHOE'); }}
-      />
-    </View>
-  );
 }
 
 function FavoritesScreen() {
