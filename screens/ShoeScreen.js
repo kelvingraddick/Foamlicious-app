@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationContext } from '../ApplicationContext';
 import SmallShoeView from '../components/SmallShoeView';
 import { colors } from '../constants/colors';
@@ -9,21 +10,22 @@ import { months } from '../constants/months';
 const ShoeScreen = ({route, navigation}) => {
   const id = route.params.id;
 
-  const { shoes, isShoesLoading, loadShoes } = useContext(ApplicationContext);
+  const { shoes, isShoesLoading, favorites, isFavoritesLoading, loadFavorites } = useContext(ApplicationContext);
 
   const [shoe, setShoe] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [suggestedShoes, setSuggestedShoes] = useState([]);
 
   useEffect(() => {
-    let currentShoe = shoes.find(shoe => shoe.id === id);
+    let currentShoe = shoes.find(shoe => shoe.id === id) || {};
+    currentShoe.isFavorited = favorites.find(favorite => favorite.id === currentShoe.id) !== undefined;
     setShoe(currentShoe);
     navigation.setOptions({ headerTitle: currentShoe.name });
 
     let currentSuggestedShoes = shoes.filter(shoe => shoe.category_1 == currentShoe.category_1);
     currentSuggestedShoes = currentSuggestedShoes.sort(() => 0.5 - Math.random()).slice(0, 3); // random top 3
     setSuggestedShoes(currentSuggestedShoes);
-  }, [shoes]);
+  }, [shoes, favorites]);
 
   const getImageUrls = () => {
     return shoe ? [shoe.image_url_1, shoe.image_url_2, shoe.image_url_3] : [];
@@ -37,6 +39,22 @@ const ShoeScreen = ({route, navigation}) => {
     let numberOfImagesScrolled = Math.round(scrollOffset / Dimensions.get('window').width);
     setCurrentImageIndex(numberOfImagesScrolled);
   };
+
+  const onFavoriteButtonPressed = async () => {
+    try {
+      let newFavorites = favorites;
+      const existingFavorite = newFavorites.find(favorite => favorite.id === shoe.id);
+      if (existingFavorite) {
+        newFavorites = newFavorites.filter(favorite => favorite.id !== shoe.id);
+      } else {
+        newFavorites.push({ id: shoe.id });
+      }
+      await AsyncStorage.setItem('favorites', JSON.stringify(newFavorites));
+      loadFavorites();
+    } catch (error) {
+      console.error('Saving favorites data failed with error: ' + error.message);
+    }
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -82,7 +100,7 @@ const ShoeScreen = ({route, navigation}) => {
           <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]}>
             <Text style={styles.buttonViewLabel}>BUY NOW</Text>
           </Pressable>
-          <Pressable style={[styles.buttonView, { backgroundColor: colors.darkGray }]}>
+          <Pressable style={[styles.buttonView, { backgroundColor: colors.darkGray }]} onPress={onFavoriteButtonPressed}>
             <Text style={styles.buttonViewLabel}>{shoe.isFavorited ? 'UN-FAVORITE' : 'FAVORITE'}</Text>
           </Pressable>
           <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E' }]}>

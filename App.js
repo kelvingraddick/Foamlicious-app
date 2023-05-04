@@ -3,9 +3,11 @@ import { Button, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationContext } from './ApplicationContext';
 import ReleasesScreen from './screens/ReleasesScreen';
 import NewsScreen from './screens/NewsScreen';
+import FavoritesScreen from './screens/FavoritesScreen';
 import SearchScreen from './screens/SearchScreen';
 import ShoeScreen from './screens/ShoeScreen';
 import { colors } from './constants/colors';
@@ -13,8 +15,10 @@ import { colors } from './constants/colors';
 const initalState = {
   shoes: [],
   news: [],
+  favorites: [],
   isShoesLoading: true,
   isNewsLoading: true,
+  isFavoritesLoading: true,
 }
 
 const reducer = (state, action) => {
@@ -27,6 +31,10 @@ const reducer = (state, action) => {
        return { ...state, news: [], isNewsLoading: true };
     case 'LOADED_NEWS':
       return { ...state, news: action.payload, isNewsLoading: false };
+    case 'LOADING_FAVORITES':
+      return { ...state, favorites: [], isFavoritesLoading: true };
+    case 'LOADED_FAVORITES':
+      return { ...state, favorites: action.payload, isFavoritesLoading: false };
     default:
       return state;
   }
@@ -37,14 +45,6 @@ const TABS = {
   NEWS: 'NEWS',
   FAVORITES: 'FAVORITES',
   SETTINGS: 'SETTINGS',
-}
-
-function FavoritesScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Favorites Screen</Text>
-    </View>
-  );
 }
 
 function SettingsScreen() {
@@ -98,6 +98,7 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initalState);
 
   useEffect(() => {
+    loadFavorites();
     loadShoes();
     loadNews();
   }, []);
@@ -124,8 +125,23 @@ export default function App() {
     }
   };
 
+  const loadFavorites = async () => {
+    try {
+      dispatch({ type: 'LOADING_FAVORITES' });
+      let favorites = [];
+      const storageData = await AsyncStorage.getItem('favorites');
+      if (storageData) {
+        console.log("favorites: " + storageData);
+        favorites = JSON.parse(storageData);
+      }
+      dispatch({ type: 'LOADED_FAVORITES', payload: favorites });
+    } catch (error) {
+      console.error('Fetching favorites data failed with error: ' + error.message);
+    }
+  };
+
   return (
-    <ApplicationContext.Provider value={{...state, loadShoes, loadNews}}>
+    <ApplicationContext.Provider value={{...state, loadShoes, loadNews, loadFavorites}}>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="TabbedScreen"
