@@ -35,7 +35,7 @@ const NewsScreen = ({navigation}) => {
           keyExtractor={item => item.id.toString()}
           renderItem={({item}) => 
             <TouchableOpacity style={styles.container} onPress={() => { Linking.openURL(item.link); }}>
-              <ImageBackground source={{ uri: item.cover_image_url }} resizeMode="cover" style={styles.backgroundImage}>
+              <ImageBackground source={{ uri: item.cover_image_url || item.author_image_url }} resizeMode="cover" style={styles.backgroundImage}>
                 <View style={styles.headerView}>
                   <Image source={{ uri: item.author_image_url }} style={styles.authorImage} />
                 </View>
