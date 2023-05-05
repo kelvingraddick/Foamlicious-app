@@ -131,7 +131,6 @@ export default function App() {
       let favorites = [];
       const storageData = await AsyncStorage.getItem('favorites');
       if (storageData) {
-        console.log("favorites: " + storageData);
         favorites = JSON.parse(storageData);
       }
       dispatch({ type: 'LOADED_FAVORITES', payload: favorites });

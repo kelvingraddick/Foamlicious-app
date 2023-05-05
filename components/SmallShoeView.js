@@ -1,13 +1,10 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
 const SmallShoeView = (props) => {
-  const { shoe } = props;
-
-  const navigation = useNavigation();
+  const { shoe, actionIconImageSource, onPress } = props;
 
   const dayOfMonthOrdinalSuffix = (dayOfMonth) => {
     if (dayOfMonth > 3 && dayOfMonth < 21) return dayOfMonth + "th";
@@ -24,7 +21,7 @@ const SmallShoeView = (props) => {
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={() => { navigation.push('SHOE', { id: shoe.id }); }}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + shoe.image_url_1 }} resizeMode="contain" style={styles.shoeImage} />
       <View style={styles.textView}>
         <Text style={styles.nameLabel}>{shoe.name}</Text>
@@ -37,7 +34,7 @@ const SmallShoeView = (props) => {
           }
         </Text>
       </View>
-      <Image source={require('../assets/images/arrow_right.png')} style={styles.moreImage} />
+      <Image source={actionIconImageSource || require('../assets/images/arrow_right.png')} style={styles.moreImage} />
     </TouchableOpacity>
   );
 };

@@ -68,7 +68,7 @@ const ReleasesScreen = ({navigation}) => {
         <FlatList
           data={displayedShoes}
           keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => <SmallShoeView shoe={item} />}
+          renderItem={({item}) => <SmallShoeView shoe={item} onPress={() => { navigation.push('SHOE', { id: item.id }); }} />}
         />
       }
       { isShoesLoading &&
