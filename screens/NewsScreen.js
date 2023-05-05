@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, ImageBackground, Linking, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { ApplicationContext } from '../ApplicationContext';
+import { getTimeSince } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 
 const NewsScreen = ({navigation}) => {
@@ -42,7 +43,7 @@ const NewsScreen = ({navigation}) => {
               </ImageBackground>
               <View style={styles.footerView}>
                   <Text style={styles.titleLabel}>{item.title}</Text>
-                  <Text style={styles.detailLabel}>{item.author} &middot; {item.timestamp}</Text>
+                  <Text style={styles.detailLabel}>{item.author} &middot; {getTimeSince(new Date(item.timestamp))}</Text>
                 </View>
             </TouchableOpacity>
           }

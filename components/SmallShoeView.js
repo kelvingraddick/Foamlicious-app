@@ -1,24 +1,11 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { getDayOfMonthOrdinalSuffix } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
 const SmallShoeView = (props) => {
   const { shoe, actionIconImageSource, onPress } = props;
-
-  const dayOfMonthOrdinalSuffix = (dayOfMonth) => {
-    if (dayOfMonth > 3 && dayOfMonth < 21) return dayOfMonth + "th";
-    switch (dayOfMonth % 10) {
-      case 1:
-        return dayOfMonth + "st";
-      case 2:
-        return dayOfMonth + "nd";
-      case 3:
-        return dayOfMonth + "rd";
-      default:
-        return dayOfMonth + "th";
-    }
-  };
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
@@ -29,7 +16,7 @@ const SmallShoeView = (props) => {
         <Text style={styles.dateLabel}>
           {
             (shoe.hide_month === '0' ? months.long[new Date(shoe.date).getMonth()] + ' ' : '') +
-            (shoe.hide_day === '0' ? dayOfMonthOrdinalSuffix(new Date(shoe.date + 'T00:00:00.000-05:00').getDate()) + ', ' : '') + 
+            (shoe.hide_day === '0' ? getDayOfMonthOrdinalSuffix(new Date(shoe.date + 'T00:00:00.000-05:00').getDate()) + ', ' : '') + 
             new Date(shoe.date).getFullYear()
           }
         </Text>
