@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationContext } from '../ApplicationContext';
@@ -15,6 +16,22 @@ const ShoeScreen = ({route, navigation}) => {
   const [shoe, setShoe] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [suggestedShoes, setSuggestedShoes] = useState([]);
+
+  let buyNowActionSheet = null;
+  const buyNowActionOptions = {
+    STOCKX: 'StockX.com',
+    GOAT: 'Goat.com',
+    CANCEL: 'Cancel',
+  };
+
+  let apparelActionSheet = null;
+  const apparelActionOptions = {
+    //DOPESNEAKERTEES: 'DopeSneakerTees.com', // site is down
+    EBAY: 'Ebay.com',
+    ETSY: 'Etsy.com',
+    MYFITTEDS: 'MyFitteds.com',
+    CANCEL: 'Cancel',
+  };
 
   useEffect(() => {
     let currentShoe = shoes.find(shoe => shoe.id === id) || {};
@@ -55,6 +72,48 @@ const ShoeScreen = ({route, navigation}) => {
       console.error('Saving favorites data failed with error: ' + error.message);
     }
   }
+
+  const onBuyNowActionOptionPress = async (index) => {
+    const searchQueryString = getSearchQueryString(shoe.name + '+' + shoe.color);
+    const actionOption = Object.values(buyNowActionOptions)[index];
+    switch (actionOption) {
+      case buyNowActionOptions.STOCKX:
+        Linking.openURL((shoe.stock_x_url && shoe.stock_x_url !== '') ? shoe.stock_x_url : 'https://stockx.com/search?s=' + searchQueryString);
+        break;
+      case buyNowActionOptions.GOAT:
+        Linking.openURL((shoe.goat_url && shoe.goat_url !== '') ? shoe.goat_url : 'https://www.goat.com/search?query=' + searchQueryString);
+        break;
+    };
+  };
+
+  const getSearchQueryString = (rawString) => {
+    return rawString && rawString
+      .replace("'", "")
+      .replace("“", "")
+      .replace("”", "")
+      .replace(" ", "+")
+      .replace("/", "+")
+      .replace("-", "+");
+  };
+
+  const onApparelActionOptionPress = async (index) => {
+    const keyword = shoe.category_2 && shoe.category_2.toLowerCase();
+    const actionOption = Object.values(apparelActionOptions)[index];
+    switch (actionOption) {
+      case apparelActionOptions.DOPESNEAKERTEES:
+        Linking.openURL((shoe.dope_sneaker_tees_url && shoe.dope_sneaker_tees_url !== '') ? shoe.dope_sneaker_tees_url : 'https://www.dopesneakertees.com/search?type=product&q=foamposite ' + keyword + ' shirt');
+        break;
+      case apparelActionOptions.EBAY:
+        Linking.openURL((shoe.ebay_apparel_url && shoe.ebay_apparel_url !== '') ? shoe.ebay_apparel_url : 'http://www.ebay.com/sch/foamposite ' + keyword + ' shirt');
+        break;
+      case apparelActionOptions.ETSY:
+        Linking.openURL((shoe.etsy_url && shoe.etsy_url !== '') ? shoe.etsy_url : 'https://www.etsy.com/search?q=foamposite ' + keyword);
+        break;
+      case apparelActionOptions.MYFITTEDS:
+        Linking.openURL((shoe.my_fitteds_url && shoe.my_fitteds_url !== '') ? shoe.my_fitteds_url : 'https://www.myfitteds.com/search?q=foamposite ' + keyword);
+        break;
+    };
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -97,19 +156,39 @@ const ShoeScreen = ({route, navigation}) => {
           </View>
           <View style={styles.dividerView}></View>
           <Text style={styles.descriptionLabel}>{shoe.color}</Text>
-          <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]}>
+          <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]} onPress={() => { buyNowActionSheet && buyNowActionSheet.show(); }}>
             <Text style={styles.buttonViewLabel}>BUY NOW</Text>
           </Pressable>
           <Pressable style={[styles.buttonView, { backgroundColor: colors.darkGray }]} onPress={onFavoriteButtonPressed}>
-            <Text style={styles.buttonViewLabel}>{shoe.isFavorited ? 'UN-FAVORITE' : 'FAVORITE'}</Text>
+            { !isFavoritesLoading && <Text style={styles.buttonViewLabel}>{isFavoritesLoading ? 'LOADING..' : (shoe.isFavorited ? 'UN-FAVORITE' : 'FAVORITE')}</Text> }
+            { isFavoritesLoading && <ActivityIndicator /> }
           </Pressable>
           <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E' }]}>
             <Text style={styles.buttonViewLabel}>ADD TO CALENDAR</Text>
           </Pressable>
           <Text style={styles.suggestedLabel}>Suggested</Text>
           {suggestedShoes.map((suggestedShoe, index) => {
-            return (<SmallShoeView shoe={suggestedShoe} />)
+            return (<SmallShoeView shoe={suggestedShoe} onPress={() => { navigation.push('SHOE', { id: suggestedShoe.id }); }} />)
           })}
+          <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E', marginBottom: 50 }]} onPress={() => { apparelActionSheet && apparelActionSheet.show(); }}>
+            <Text style={styles.buttonViewLabel}>FIND MATCHING APPAREL</Text>
+          </Pressable>
+          <ActionSheet
+            ref={x => buyNowActionSheet = x}
+            title={'Choose seller'}
+            tintColor={colors.darkGray}
+            options={Object.values(buyNowActionOptions)}
+            cancelButtonIndex={Object.values(buyNowActionOptions).indexOf(buyNowActionOptions.CANCEL)}
+            onPress={onBuyNowActionOptionPress}
+          />
+          <ActionSheet
+            ref={x => apparelActionSheet = x}
+            title={'Choose seller'}
+            tintColor={colors.darkGray}
+            options={Object.values(apparelActionOptions)}
+            cancelButtonIndex={Object.values(apparelActionOptions).indexOf(apparelActionOptions.CANCEL)}
+            onPress={onApparelActionOptionPress}
+          />
         </>
       }
       { isShoesLoading &&
