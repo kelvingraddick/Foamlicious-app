@@ -93,7 +93,7 @@ const FavoritesScreen = ({navigation}) => {
           />
           <ActionSheet
             ref={x => actionSheet = x}
-            title={'Which one do you like ?'}
+            title={'Choose option:'}
             tintColor={colors.darkGray}
             options={[actionOptions.VIEW_SHOE, actionOptions.MOVE_UP, actionOptions.MOVE_DOWN, actionOptions.REMOVE_AS_FAVORITE, actionOptions.CANCEL]}
             cancelButtonIndex={Object.values(actionOptions).indexOf(actionOptions.CANCEL)}
