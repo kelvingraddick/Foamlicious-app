@@ -1,3 +1,11 @@
+import { months } from '../constants/months';
+
+const getPrettyDate = (date, showMonth, showDay) => {
+  return (showMonth ? months.long[new Date(date).getMonth()] + ' ' : '') +
+    (showDay ? getDayOfMonthOrdinalSuffix(new Date(date + 'T00:00:00.000-05:00').getDate()) + ', ' : '') + 
+    new Date(date).getFullYear();
+};
+
 const getTimeSince = (time) => {
   // https://stackoverflow.com/a/12475270
   switch (typeof time) {
@@ -68,6 +76,7 @@ const getDayOfMonthOrdinalSuffix = (dayOfMonth) => {
 };
 
 module.exports = {
+  getPrettyDate,
   getTimeSince,
   getDayOfMonthOrdinalSuffix
 };

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ActivityIndicator, Dimensions, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNCalendarEvents from "react-native-calendar-events";
 import { ApplicationContext } from '../ApplicationContext';
 import SmallShoeView from '../components/SmallShoeView';
+import { getPrettyDate } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
@@ -33,6 +35,9 @@ const ShoeScreen = ({route, navigation}) => {
     CANCEL: 'Cancel',
   };
 
+  let calendarActionSheet = null;
+  const [calendars, setCalendars] = useState([]);
+
   useEffect(() => {
     let currentShoe = shoes.find(shoe => shoe.id === id) || {};
     currentShoe.isFavorited = favorites.find(favorite => favorite.id === currentShoe.id) !== undefined;
@@ -43,6 +48,13 @@ const ShoeScreen = ({route, navigation}) => {
     currentSuggestedShoes = currentSuggestedShoes.sort(() => 0.5 - Math.random()).slice(0, 3); // random top 3
     setSuggestedShoes(currentSuggestedShoes);
   }, [shoes, favorites]);
+
+  // when calendars are found (and state updated), open calendar select menu
+  useEffect(() => {
+    if (calendars && calendars.length > 0) {
+      calendarActionSheet && calendarActionSheet.show();
+    }
+  }, [calendars]);
 
   const getImageUrls = () => {
     return shoe ? [shoe.image_url_1, shoe.image_url_2, shoe.image_url_3] : [];
@@ -72,6 +84,25 @@ const ShoeScreen = ({route, navigation}) => {
       console.error('Saving favorites data failed with error: ' + error.message);
     }
   }
+
+  const onAddToCalendarButtonPressed = async () => {
+    RNCalendarEvents.requestPermissions().then((response) => {
+      if (response === 'authorized') {
+        RNCalendarEvents.findCalendars().then((response) => {
+          const editableCalendars = response.filter(x => x.allowsModifications);
+          setCalendars(editableCalendars);
+        })
+        .catch((error) => {
+          console.error('Finding calendars failed with error: ' + error.message);
+        });
+      } else {
+        console.log('Requesting calendar permissions failed with response: ' + response);
+      }
+    })
+    .catch((error) => {
+      console.error('Requesting calendar permissions failed with error: ' + error.message);
+    });
+  };
 
   const onBuyNowActionOptionPress = async (index) => {
     const searchQueryString = getSearchQueryString(shoe.name + '+' + shoe.color);
@@ -113,6 +144,31 @@ const ShoeScreen = ({route, navigation}) => {
         Linking.openURL((shoe.my_fitteds_url && shoe.my_fitteds_url !== '') ? shoe.my_fitteds_url : 'https://www.myfitteds.com/search?q=foamposite ' + keyword);
         break;
     };
+  };
+
+  const onCalendarActionOptionPress = async (index) => {
+    const calendar = calendars[index];
+    if (calendar) {
+      const title = shoe.name + ' release day';
+      const date = new Date(shoe.date + 'T00:00:00.000-05:00');
+
+      RNCalendarEvents.saveEvent(title, {
+        calendarId: calendar.id,
+        title: title,
+        startDate: date.toISOString(),
+        endDate: date.toISOString(),
+        allDay: true,
+        description: title,
+        notes: title
+      })
+      .then((response) => {
+        const message = getPrettyDate(shoe.date, shoe.hide_month === '0', shoe.hide_day === '0') + ': \'' + title + '\'';
+        Alert.alert('An event was added to your calendar!', message, [{text: 'OK' }]);
+      })
+      .catch((error) => {
+        console.error('Saving calendar event failed with error: ' + error.message);
+      });
+    }
   };
 
   return (
@@ -164,7 +220,7 @@ const ShoeScreen = ({route, navigation}) => {
             { isFavoritesLoading && <ActivityIndicator /> }
           </Pressable>
           { new Date(shoe.date) > new Date() &&
-            <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E' }]}>
+            <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E' }]} onPress={onAddToCalendarButtonPressed}>
               <Text style={styles.buttonViewLabel}>ADD TO CALENDAR</Text>
             </Pressable>
           }
@@ -190,6 +246,14 @@ const ShoeScreen = ({route, navigation}) => {
             options={Object.values(apparelActionOptions)}
             cancelButtonIndex={Object.values(apparelActionOptions).indexOf(apparelActionOptions.CANCEL)}
             onPress={onApparelActionOptionPress}
+          />
+          <ActionSheet
+            ref={x => calendarActionSheet = x}
+            title={'Choose calendar to add event to:'}
+            tintColor={colors.darkGray}
+            options={calendars.map(calendar => calendar.title).concat('Cancel')}
+            cancelButtonIndex={calendars.length}
+            onPress={onCalendarActionOptionPress}
           />
         </>
       }
