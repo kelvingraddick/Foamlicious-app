@@ -163,9 +163,11 @@ const ShoeScreen = ({route, navigation}) => {
             { !isFavoritesLoading && <Text style={styles.buttonViewLabel}>{isFavoritesLoading ? 'LOADING..' : (shoe.isFavorited ? 'UN-FAVORITE' : 'FAVORITE')}</Text> }
             { isFavoritesLoading && <ActivityIndicator /> }
           </Pressable>
-          <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E' }]}>
-            <Text style={styles.buttonViewLabel}>ADD TO CALENDAR</Text>
-          </Pressable>
+          { new Date(shoe.date) > new Date() &&
+            <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E' }]}>
+              <Text style={styles.buttonViewLabel}>ADD TO CALENDAR</Text>
+            </Pressable>
+          }
           <Text style={styles.suggestedLabel}>Suggested</Text>
           {suggestedShoes.map((suggestedShoe, index) => {
             return (<SmallShoeView shoe={suggestedShoe} onPress={() => { navigation.push('SHOE', { id: suggestedShoe.id }); }} />)
