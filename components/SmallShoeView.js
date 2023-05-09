@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { getDayOfMonthOrdinalSuffix } from '../helpers/formatter';
+import { getPrettyDate } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
@@ -13,12 +13,7 @@ const SmallShoeView = (props) => {
       <View style={styles.textView}>
         <Text style={styles.nameLabel}>{shoe.name}</Text>
         <Text style={styles.detailLabel}>{shoe.color}</Text>
-        <Text style={styles.dateLabel}>
-          {
-            (shoe.hide_month === '0' ? months.long[new Date(shoe.date).getMonth()] + ' ' : '') +
-            (shoe.hide_day === '0' ? getDayOfMonthOrdinalSuffix(new Date(shoe.date + 'T00:00:00.000-05:00').getDate()) + ', ' : '') + 
-            new Date(shoe.date).getFullYear()
-          }
+        <Text style={styles.dateLabel}>{getPrettyDate(shoe.date, shoe.hide_month === '0', shoe.hide_day === '0')}
         </Text>
       </View>
       <Image source={actionIconImageSource || require('../assets/images/arrow_right.png')} style={styles.moreImage} />
