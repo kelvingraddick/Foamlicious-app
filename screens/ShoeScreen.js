@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,6 +7,7 @@ import RNCalendarEvents from "react-native-calendar-events";
 import { ApplicationContext } from '../ApplicationContext';
 import SmallShoeView from '../components/SmallShoeView';
 import { getPrettyDate } from '../helpers/formatter';
+import { settings } from '../constants/settings';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
@@ -39,6 +40,16 @@ const ShoeScreen = ({route, navigation}) => {
   const [calendars, setCalendars] = useState([]);
 
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={onShareButtonPressed}>
+          {() => (<Image source={require('../assets/images/share.png')} style={styles.headerIcon} />)}
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
+
+  useEffect(() => {
     let currentShoe = shoes.find(shoe => shoe.id === id) || {};
     currentShoe.isFavorited = favorites.find(favorite => favorite.id === currentShoe.id) !== undefined;
     setShoe(currentShoe);
@@ -67,6 +78,26 @@ const ShoeScreen = ({route, navigation}) => {
   const onImageScroll = (scrollOffset) => {
     let numberOfImagesScrolled = Math.round(scrollOffset / Dimensions.get('window').width);
     setCurrentImageIndex(numberOfImagesScrolled);
+  };
+
+  const onShareButtonPressed = async () => {
+    try {
+      const message = 'Check out ' + shoe.name + ' ' + shoe.color + ' on Foams App! (' + settings.APP_URL + ')';
+      await Share.share(
+        {
+          message: message,
+          url: settings.APP_URL,
+          title: message,
+        },
+        {
+          dialogTitle: message,
+          subject: message,
+          tintColor: colors.darkGray 
+        }
+      );
+    } catch (error) {
+      console.error('Sharing shoe failed with error: ' + error.message);
+    }
   };
 
   const onFavoriteButtonPressed = async () => {
@@ -282,6 +313,11 @@ const ShoeScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff'
+  },
+  headerIcon: {
+    resizeMode: 'contain',
+    maxHeight: 24,
+    tintColor: colors.darkGray
   },
   imageScrollView: {
     height: 250
