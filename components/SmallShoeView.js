@@ -2,7 +2,6 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getPrettyDate } from '../helpers/formatter';
 import { colors } from '../constants/colors';
-import { months } from '../constants/months';
 
 const SmallShoeView = (props) => {
   const { shoe, actionIconImageSource, onPress } = props;
