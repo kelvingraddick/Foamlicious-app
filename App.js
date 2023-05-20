@@ -8,6 +8,7 @@ import { ApplicationContext } from './ApplicationContext';
 import ReleasesScreen from './screens/ReleasesScreen';
 import NewsScreen from './screens/NewsScreen';
 import FavoritesScreen from './screens/FavoritesScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import SearchScreen from './screens/SearchScreen';
 import ShoeScreen from './screens/ShoeScreen';
 import { colors } from './constants/colors';
@@ -45,14 +46,6 @@ const TABS = {
   NEWS: 'NEWS',
   FAVORITES: 'FAVORITES',
   SETTINGS: 'SETTINGS',
-}
-
-function SettingsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Settings Screen</Text>
-    </View>
-  );
 }
 
 const Tab = createBottomTabNavigator();
