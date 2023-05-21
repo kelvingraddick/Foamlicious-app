@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Image, Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, Linking, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -82,11 +82,12 @@ const ShoeScreen = ({route, navigation}) => {
 
   const onShareButtonPressed = async () => {
     try {
-      const message = 'Check out ' + shoe.name + ' ' + shoe.color + ' on Foams App! (' + settings.APP_URL + ')';
+      const url = Platform.OS === 'ios' ? settings.APPLE_APP_URL : settings.ANDROID_APP_URL;
+      const message = 'Check out ' + shoe.name + ' ' + shoe.color + ' on Foams App! ' + url;
       await Share.share(
         {
           message: message,
-          url: settings.APP_URL,
+          url: url,
           title: message,
         },
         {

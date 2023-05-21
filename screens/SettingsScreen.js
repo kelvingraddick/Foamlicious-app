@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Linking, SafeAreaView, SectionList, Share, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, Linking, Platform, SafeAreaView, SectionList, Share, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { settings } from '../constants/settings';
 import { colors } from '../constants/colors';
 import { Link } from '@react-navigation/native';
@@ -48,7 +48,7 @@ const SettingsScreen = ({navigation}) => {
               await Share.share(
                 {
                   message: message,
-                  url: settings.APP_URL,
+                  url: Platform.OS === 'ios' ? settings.APPLE_APP_URL : settings.ANDROID_APP_URL,
                   title: message,
                 },
                 {
@@ -63,7 +63,10 @@ const SettingsScreen = ({navigation}) => {
           }
         },
         { text: 'Send Feedback', onPress: () => { openUrl('mailto:' + settings.EMAIL_ADDRESS); } },
-        { text: 'Rate This App', onPress: () => { openUrl('itms-apps://itunes.apple.com/us/app/apple-store/id' + settings.APP_ID + '?mt=8'); } },
+        {
+          text: 'Rate This App',
+          onPress: () => { openUrl(Platform.OS === 'ios' ? 'itms-apps://itunes.apple.com/us/app/apple-store/id' + settings.APPLE_APP_ID + '?mt=8' : settings.ANDROID_APP_URL); }
+        },
       ],
     },
     {

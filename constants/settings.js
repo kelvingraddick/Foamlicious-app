@@ -1,7 +1,9 @@
 export const settings = {
   APP_NAME: 'Foamlicious',
-  APP_ID: '1466460494',
-  APP_URL: 'http://itunes.com/apps/foamlicious',
+  APPLE_APP_ID: '1466460494',
+  APPLE_APP_URL: 'http://itunes.com/apps/foamlicious',
+  ANDROID_APP_ID: 'com.wavelinkllc.foamlicious',
+  ANDROID_APP_URL: 'http://play.google.com/store/apps/details?id=com.wavelinkllc.foamlicious',
   APP_VERSION: '1.0',
   WEBSITE_URL: 'http://linkable.bio/foamlicious',
   PRIVACY_POLICY_URL: 'http://wavelinkllc.com/foamlicious/privacypolicy/',
