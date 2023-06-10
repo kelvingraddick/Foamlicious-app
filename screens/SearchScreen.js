@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { RNCamera } from 'react-native-camera';
 import { ApplicationContext } from '../ApplicationContext';
 import { colors } from '../constants/colors';
 
@@ -8,16 +9,20 @@ const SearchScreen = ({navigation}) => {
 
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
+  const [isBarcodeScanningEnabled, setIsBarcodeScanningEnabled] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={onScanButtonPressed}>
-          {() => (<Image source={require('../assets/images/barcode.png')} style={styles.headerIcon} />)}
+          {() => isBarcodeScanningEnabled ?
+            (<Text style={styles.headerX}>✕</Text>) :
+            (<Image source={require('../assets/images/barcode.png')} style={styles.headerIcon} />)
+          }
         </Pressable>
       ),
     });
-  }, [navigation]);
+  }, [navigation, isBarcodeScanningEnabled]);
 
   useEffect(() => {
     let matchingShoes = shoes.filter(shoe => { return shoe.name.toLowerCase().includes(query) || shoe.description.toLowerCase().includes(query) || shoe.color.toLowerCase().includes(query); });
@@ -26,7 +31,7 @@ const SearchScreen = ({navigation}) => {
   }, [query]);
 
   const onScanButtonPressed = () => {
-    
+    setIsBarcodeScanningEnabled(!isBarcodeScanningEnabled);
   };
 
   const renderItem = ({ item }) => {
@@ -43,6 +48,19 @@ const SearchScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      { isBarcodeScanningEnabled &&
+        <View>
+          <RNCamera
+            style={styles.barcodeCameraView}
+            //cameraViewDimensions={{width: 500, height: 250}}
+            onBarCodeRead={(event) => {
+              setQuery(event.data);
+              setIsBarcodeScanningEnabled(false);
+            }}
+          />
+          <View style={styles.barcodeLineView}></View>
+        </View>
+      }
       <View style={styles.searchView}>
         <Image source={require('../assets/images/search.png')} style={styles.searchIcon} />
         <TextInput
@@ -69,10 +87,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
+  barcodeCameraView: {
+    width: '100%',
+    height: Platform.OS === 'ios' ? 250 : 500
+  },
+  barcodeLineView: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 125 : 250,
+    width: '100%',
+    height: 3,
+    backgroundColor: colors.blue
+  },
   headerIcon: {
     resizeMode: 'contain',
     maxHeight: 24,
     tintColor: colors.darkGray
+  },
+  headerX: {
+    paddingRight: 10,
+    fontFamily: 'AvenirNext-Regular',
+    fontSize: 24,
+    color: colors.darkGray,
   },
   searchView: {
     flexDirection: 'row',
