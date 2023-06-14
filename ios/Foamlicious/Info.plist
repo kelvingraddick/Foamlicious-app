@@ -22,12 +22,21 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+		<string>itms-apps</string>
+		<string>snapchat</string>
+		<string>fb</string>
+		<string>instagram</string>
+		<string>twitter</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-      	<true/>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
@@ -39,19 +48,19 @@
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app needs calendar permissions to add events for shoe release dates</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This allows you to use your camera to take photos of shoes and barcodes.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs your location when you add calendar events for shoe release dates while the app is in use or in the background.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs your location when you add calendar events for shoe release dates while the app is in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs your location when you add calendar events for shoe release dates while the app is in use.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs your location when you add calendar events for shoe release dates while the app is in use or in the background.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This allows you to use your camera to take photos of shoes and barcodes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This allows you to select photos/videos from your library for shoes and barcodes.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This allows you to use your camera to take videos (with sound) for shoes and barcodes.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This allows you to select photos/videos from your library for shoes and barcodes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This allows you to select photos/videos from your library for shoes and barcodes.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -63,16 +72,14 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>mailto</string>
-		<string>itms-apps</string>
-		<string>snapchat</string>
-		<string>fb</string>
-		<string>instagram</string>
-		<string>twitter</string>
-	</array>
 </dict>
 </plist>
