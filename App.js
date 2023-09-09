@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useReducer } from 'react';
 import { Button, Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, useNavigation, useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import FavoritesScreen from './screens/FavoritesScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import SearchScreen from './screens/SearchScreen';
 import ShoeScreen from './screens/ShoeScreen';
+import useTheme from './hooks/useTheme';
 import { colors } from './constants/colors';
 
 const initalState = {
@@ -52,15 +53,23 @@ const Tab = createBottomTabNavigator();
 
 const TabbedScreen = () => {
   const navigation = useNavigation();
+  const colorScheme = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerTitleStyle: styles.headerTitle,
+        headerStyle: {
+          backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+        },
+        headerTitleStyle: [styles.headerTitle, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }],
         headerRight: () => (
           <Pressable onPress={() => { navigation.navigate('SEARCH'); }}>
             {() => (<Image source={require('./assets/images/search.png')} style={styles.headerIcon} />)}
           </Pressable>
         ),
+        tabBarStyle: {
+          backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+          borderTopColor: (colorScheme === 'light' ? colors.lightGray : colors.lightBlack),
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconSource;
           switch (route.name) {
@@ -89,6 +98,7 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initalState);
+  const colorScheme = useTheme();
 
   useEffect(() => {
     loadFavorites();
@@ -132,13 +142,15 @@ export default function App() {
     }
   };
 
+  const DarkTheme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: colors.darkBlack } };
+
   return (
     <ApplicationContext.Provider value={{...state, loadShoes, loadNews, loadFavorites}}>
-      <NavigationContainer>
+      <NavigationContainer theme={(colorScheme === 'light' ? DefaultTheme : DarkTheme)}>
         <Stack.Navigator
           initialRouteName="TabbedScreen"
           screenOptions={{
-            headerTitleStyle: styles.headerTitle,
+            headerTitleStyle: [styles.headerTitle, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }],
             headerBackTitleVisible: false,
             headerTintColor: colors.darkGray,
           }}
@@ -162,7 +174,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.darkGray,
   },
   headerIcon: {
     resizeMode: 'contain',

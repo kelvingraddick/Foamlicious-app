@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, ImageBackground, Linking, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { ApplicationContext } from '../ApplicationContext';
+import useTheme from '../hooks/useTheme';
 import { getTimeSince } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 
@@ -9,6 +10,8 @@ const NewsScreen = ({navigation}) => {
   const { news, isNewsLoading, loadNews } = useContext(ApplicationContext);
 
   const [displayedNews, setDisplayedNews] = useState([]);
+
+  const colorScheme = useTheme();
 
   useEffect(() => {
     navigation.setOptions({
@@ -29,7 +32,7 @@ const NewsScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}>
       { !isNewsLoading &&
         <FlatList
           data={displayedNews}
@@ -41,8 +44,16 @@ const NewsScreen = ({navigation}) => {
                   <Image source={{ uri: item.author_image_url }} style={styles.authorImage} />
                 </View>
               </ImageBackground>
-              <View style={styles.footerView}>
-                  <Text style={styles.titleLabel}>{item.title}</Text>
+              <View
+                style={[
+                  styles.footerView,
+                  {
+                    backgroundColor: (colorScheme === 'light' ? 'rgba(255, 255, 255, 0.50)' : colors.lightBlack),
+                    borderBottomColor: (colorScheme === 'light' ? colors.lightGray : colors.lightBlack)
+                  }
+                ]}
+              >
+                  <Text style={[styles.titleLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{item.title}</Text>
                   <Text style={styles.detailLabel}>{item.author} &middot; {getTimeSince(new Date(item.timestamp))}</Text>
                 </View>
             </TouchableOpacity>
@@ -56,8 +67,8 @@ const NewsScreen = ({navigation}) => {
           renderItem={({item}) => {
             return (
               <SkeletonPlaceholder
-                backgroundColor={colors.whiteGray}
-                highlightColor={'#fff'}
+                backgroundColor={(colorScheme === 'light' ? colors.whiteGray : colors.lightBlack)}
+                highlightColor={(colorScheme === 'light' ? colors.white : colors.darkGray)}
                 borderRadius={0}
               >
                 <SkeletonPlaceholder.Item flexDirection="column">
@@ -86,7 +97,7 @@ const styles = StyleSheet.create({
     tintColor: colors.darkGray
   },
   container: {
-    backgroundColor: '#fff'
+
   },
   backgroundImage: {
     height: Dimensions.get('window').width * 0.50,
@@ -101,15 +112,12 @@ const styles = StyleSheet.create({
   },
   footerView: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.50)',
     borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray,
   },
   titleLabel: {
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.darkGray,
   },
   detailLabel: {
     fontFamily: 'AvenirNext-Regular',

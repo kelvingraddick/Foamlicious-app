@@ -1,18 +1,32 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import useTheme from '../hooks/useTheme';
 import { getPrettyDate } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 
 const SmallShoeView = (props) => {
   const { shoe, actionIconImageSource, onPress } = props;
 
+  const colorScheme = useTheme();
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        { 
+          backgroundColor: (colorScheme === 'light' ? 'transparent' : colors.lightBlack),
+          marginBottom: (colorScheme === 'light' ? 0 : 1),
+          borderBottomWidth: (colorScheme === 'light' ? 1 : 0),
+          borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent'),
+        }
+      ]}
+      onPress={onPress}
+    >
       <Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + shoe.image_url_1 }} resizeMode="contain" style={styles.shoeImage} />
       <View style={styles.textView}>
-        <Text style={styles.nameLabel}>{shoe.name}</Text>
+        <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
         <Text style={styles.detailLabel}>{shoe.color}</Text>
-        <Text style={styles.dateLabel}>{getPrettyDate(shoe.date, shoe.hide_month === '0', shoe.hide_day === '0')}
+        <Text style={[styles.dateLabel, { color: (colorScheme === 'light' ? colors.gray : colors.darkGray) }]}>{getPrettyDate(shoe.date, shoe.hide_month === '0', shoe.hide_day === '0')}
         </Text>
       </View>
       <Image source={actionIconImageSource || require('../assets/images/arrow_right.png')} style={styles.moreImage} />
@@ -28,8 +42,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingLeft: 15,
     paddingRight: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray,
   },
   shoeImage: {
     height: 80,
@@ -44,7 +56,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.darkGray,
   },
   detailLabel: {
     fontFamily: 'AvenirNext-Regular',
@@ -54,7 +65,6 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 12,
-    color: colors.gray,
   },
   moreImage: {
     height: 15,

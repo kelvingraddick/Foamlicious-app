@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Linking, Platform, SafeAreaView, SectionList, Share, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import useTheme from '../hooks/useTheme';
 import { settings } from '../constants/settings';
 import { colors } from '../constants/colors';
 import { Link } from '@react-navigation/native';
@@ -7,10 +8,19 @@ import { Link } from '@react-navigation/native';
 const SettingsScreen = ({navigation}) => {
   const [displayedShoes, setDisplayedShoes] = useState([]);
 
+  const colorScheme = useTheme();
+
   const DATA = [
     {
       title: 'GENERAL',
-      data: [{ text: settings.APP_NAME + ' Website', onPress: () => { openUrl(settings.WEBSITE_URL); } }],
+      data: [
+        { text: settings.APP_NAME + ' Website', onPress: () => { openUrl(settings.WEBSITE_URL); } },
+        // TODO: implement theme change button
+        //{
+        //  text: 'Toggle theme: ' + (colorScheme === 'light' ? 'Light' : 'Dark'),
+        //  onPress: () => { Appearance.setColorScheme(colorScheme === 'light' ? 'dark' : 'light'); }
+        //}
+      ],
     },
     {
       title: 'SOCIAL',
@@ -96,8 +106,18 @@ const SettingsScreen = ({navigation}) => {
         sections={DATA}
         keyExtractor={(item, index) => item + index}
         renderItem={({item, index}) => (
-          <TouchableOpacity style={[styles.itemContainer, { borderTopWidth: index === 0 ? 1 : 0 }]} onPress={item.onPress}>
-            <Text style={styles.itemLabel}>{item.text}</Text>
+          <TouchableOpacity
+            style={[
+              styles.itemContainer,
+              {
+                borderTopWidth: index === 0 ? 1 : 0,
+                backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+                borderColor: (colorScheme === 'light' ? colors.lightGray : colors.darkBlack)
+              }
+            ]}
+            onPress={item.onPress}
+          >
+            <Text style={[styles.itemLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{item.text}</Text>
             { item.imageSource && <Image source={item.imageSource} style={styles.itemImage} />}
           </TouchableOpacity>
         )}
@@ -122,14 +142,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 40,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderColor: colors.lightGray,
   },
   itemLabel: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 14,
-    color: colors.darkGray,
   },
   itemImage: {
     height: 20,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import useTheme from '../hooks/useTheme';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
@@ -9,12 +10,25 @@ const LargeShoeView = (props) => {
 
   const navigation = useNavigation();
 
+  const colorScheme = useTheme();
+
   return (
-    <TouchableOpacity style={styles.container} onPress={() => { navigation.push('SHOE', { id: shoe.id }); }}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        { 
+          backgroundColor: (colorScheme === 'light' ? 'transparent' : colors.lightBlack),
+          marginBottom: (colorScheme === 'light' ? 0 : 1),
+          borderBottomWidth: (colorScheme === 'light' ? 1 : 0),
+          borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent'),
+        }
+      ]}
+      onPress={() => { navigation.push('SHOE', { id: shoe.id }); }}
+    >
       <ImageBackground source={{ uri: 'http://www.wavelinkllc.com/foamlife' + shoe.image_url_1 }} resizeMode="contain" style={styles.backgroundImage}>
         <View style={styles.headerView}>
           <View style={styles.nameView}>
-            <Text style={styles.nameLabel}>{shoe.name}</Text>
+            <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
             <Text style={styles.colorLabel}>{shoe.color}</Text>
           </View>
           <View style={styles.dateView}>
@@ -44,8 +58,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     height: Dimensions.get('window').width * 0.85,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray
   },
   backgroundImage: {
     flex: 1,
@@ -66,7 +78,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.darkGray,
   },
   colorLabel: {
     fontFamily: 'AvenirNext-Regular',

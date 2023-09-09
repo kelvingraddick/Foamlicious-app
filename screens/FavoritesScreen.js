@@ -4,6 +4,7 @@ import ActionSheet from 'react-native-actionsheet';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationContext } from '../ApplicationContext';
+import useTheme from '../hooks/useTheme';
 import { colors } from '../constants/colors';
 import SmallShoeView from '../components/SmallShoeView';
 
@@ -12,6 +13,8 @@ const FavoritesScreen = ({navigation}) => {
 
   const [displayedShoes, setDisplayedShoes] = useState([]);
   const [selectedShoe, setSelectedShoe] = useState(null);
+
+  const colorScheme = useTheme();
 
   let actionSheet = null;
   const actionOptions = {
@@ -86,7 +89,7 @@ const FavoritesScreen = ({navigation}) => {
       { (!isFavoritesLoading && !isShoesLoading) && favorites.length > 0 &&
         <>
           <FlatList
-            style={styles.list}
+            style={[styles.list, { backgroundColor: (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}
             data={displayedShoes}
             keyExtractor={item => item.id.toString()}
             renderItem={({item}) => <SmallShoeView shoe={item} actionIconImageSource={require('../assets/images/options.png')} onPress={() => setSelectedShoe(item)} />}
@@ -112,8 +115,8 @@ const FavoritesScreen = ({navigation}) => {
           renderItem={({item}) => {
             return (
               <SkeletonPlaceholder
-                backgroundColor={colors.whiteGray}
-                highlightColor={'#fff'}
+                backgroundColor={(colorScheme === 'light' ? colors.whiteGray : colors.lightBlack)}
+                highlightColor={(colorScheme === 'light' ? colors.white : colors.darkGray)}
                 borderRadius={0}
               >
                 <SkeletonPlaceholder.Item flexDirection="column">

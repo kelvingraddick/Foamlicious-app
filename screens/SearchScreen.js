@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ApplicationContext } from '../ApplicationContext';
+import useTheme from '../hooks/useTheme';
 import { colors } from '../constants/colors';
 
 const SearchScreen = ({navigation}) => {
@@ -11,8 +12,13 @@ const SearchScreen = ({navigation}) => {
   const [query, setQuery] = useState('');
   const [isBarcodeScanningEnabled, setIsBarcodeScanningEnabled] = useState(false);
 
+  const colorScheme = useTheme();
+
   useEffect(() => {
     navigation.setOptions({
+      headerStyle: {
+        backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+      },
       headerRight: () => (
         <Pressable onPress={onScanButtonPressed}>
           {() => isBarcodeScanningEnabled ?
@@ -36,10 +42,10 @@ const SearchScreen = ({navigation}) => {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.resultView}>
+      <View style={[styles.resultView, { backgroundColor: (colorScheme === 'light' ? 'rgba(255, 255, 255, 0.50)' : colors.lightBlack), marginBottom: (colorScheme === 'light' ? 0 : 1), borderBottomWidth: (colorScheme === 'light' ? 1 : 0), borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent') }]}>
         <Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + item.image_url_1 }} resizeMode="contain" style={styles.image} />
         <View style={styles.textView}>
-          <Text style={styles.nameLabel}>{item.name}</Text>
+          <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{item.name}</Text>
           <Text style={styles.detailLabel}>{item.color}</Text>
         </View>
       </View>
@@ -47,7 +53,7 @@ const SearchScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}>
       { isBarcodeScanningEnabled &&
         <View>
           <RNCamera
@@ -61,7 +67,7 @@ const SearchScreen = ({navigation}) => {
           <View style={styles.barcodeLineView}></View>
         </View>
       }
-      <View style={styles.searchView}>
+      <View style={[styles.searchView, { borderBottomWidth: (colorScheme === 'light' ? 1 : 0), borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent') }]}>
         <Image source={require('../assets/images/search.png')} style={styles.searchIcon} />
         <TextInput
           style={styles.searchBox}
@@ -85,7 +91,6 @@ const SearchScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
   },
   barcodeCameraView: {
     width: '100%',
@@ -113,8 +118,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray
   },
   searchIcon: {
     resizeMode: 'contain',
@@ -130,8 +133,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray
   },
   image: {
     height: 40,
@@ -142,13 +143,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
   },
   nameLabel: {
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.darkGray,
   },
   detailLabel: {
     fontFamily: 'AvenirNext-Regular',
