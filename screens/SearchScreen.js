@@ -2,22 +2,20 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ApplicationContext } from '../ApplicationContext';
-import useTheme from '../hooks/useTheme';
+import { appearanceThemes } from '../constants/appearanceThemes';
 import { colors } from '../constants/colors';
 
 const SearchScreen = ({navigation}) => {
-  const { shoes, isShoesLoading, loadShoes, news, isNewsLoading, loadNews } = useContext(ApplicationContext);
+  const { shoes, isShoesLoading, loadShoes, news, isNewsLoading, loadNews, appearanceTheme } = useContext(ApplicationContext);
 
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
   const [isBarcodeScanningEnabled, setIsBarcodeScanningEnabled] = useState(false);
 
-  const colorScheme = useTheme();
-
   useEffect(() => {
     navigation.setOptions({
       headerStyle: {
-        backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+        backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.lightBlack),
       },
       headerRight: () => (
         <Pressable onPress={onScanButtonPressed}>
@@ -42,10 +40,10 @@ const SearchScreen = ({navigation}) => {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={[styles.resultView, { backgroundColor: (colorScheme === 'light' ? 'rgba(255, 255, 255, 0.50)' : colors.lightBlack), marginBottom: (colorScheme === 'light' ? 0 : 1), borderBottomWidth: (colorScheme === 'light' ? 1 : 0), borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent') }]}>
+      <View style={[styles.resultView, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? 'rgba(255, 255, 255, 0.50)' : colors.lightBlack), marginBottom: (appearanceTheme == appearanceThemes.LIGHT ? 0 : 1), borderBottomWidth: (appearanceTheme == appearanceThemes.LIGHT ? 1 : 0), borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent') }]}>
         <Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + item.image_url_1 }} resizeMode="contain" style={styles.image} />
         <View style={styles.textView}>
-          <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{item.name}</Text>
+          <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{item.name}</Text>
           <Text style={styles.detailLabel}>{item.color}</Text>
         </View>
       </View>
@@ -53,7 +51,7 @@ const SearchScreen = ({navigation}) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}>
+    <View style={[styles.container, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.darkBlack) }]}>
       { isBarcodeScanningEnabled &&
         <View>
           <RNCamera
@@ -67,7 +65,7 @@ const SearchScreen = ({navigation}) => {
           <View style={styles.barcodeLineView}></View>
         </View>
       }
-      <View style={[styles.searchView, { borderBottomWidth: (colorScheme === 'light' ? 1 : 0), borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent') }]}>
+      <View style={[styles.searchView, { borderBottomWidth: (appearanceTheme == appearanceThemes.LIGHT ? 1 : 0), borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent') }]}>
         <Image source={require('../assets/images/search.png')} style={styles.searchIcon} />
         <TextInput
           style={styles.searchBox}

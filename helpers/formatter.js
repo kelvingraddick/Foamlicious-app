@@ -75,8 +75,15 @@ const getDayOfMonthOrdinalSuffix = (dayOfMonth) => {
   }
 };
 
+const getCapitalizedWord = (word) => {
+  return (word && word.length > 0) ?
+    word.charAt(0).toUpperCase() + word.slice(1) :
+    word;
+};
+
 module.exports = {
   getPrettyDate,
   getTimeSince,
-  getDayOfMonthOrdinalSuffix
+  getDayOfMonthOrdinalSuffix,
+  getCapitalizedWord
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, FlatList, Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { ApplicationContext } from '../ApplicationContext';
-import useTheme from '../hooks/useTheme';
+import { appearanceThemes } from '../constants/appearanceThemes';
 import { filters } from '../constants/filters';
 import { colors } from '../constants/colors';
 import { sorts } from '../constants/sorts';
@@ -10,14 +10,12 @@ import SmallShoeView from '../components/SmallShoeView';
 import LargeShoeView from '../components/LargeShoeView';
 
 const ReleasesScreen = ({navigation}) => {
-  const { shoes, isShoesLoading, loadShoes } = useContext(ApplicationContext);
+  const { shoes, isShoesLoading, loadShoes, appearanceTheme } = useContext(ApplicationContext);
 
   const [displayedShoes, setDisplayedShoes] = useState([]);
   const [filter, setFilter] = useState(filters.UPCOMING);
   const [upcomingShoesSort, setUpcomingShoesSort] = useState(sorts.ASCENDING);
   const [pastShoesSort, setPastShoesSort] = useState(sorts.DESCENDING);
-
-  const colorScheme = useTheme();
 
   useEffect(() => {
     let imageSource = (filter === filters.UPCOMING ? upcomingShoesSort : pastShoesSort) === sorts.ASCENDING ?
@@ -52,17 +50,17 @@ const ReleasesScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: (colorScheme === 'light' ? colors.white : 'transparent') }]}>
-      <View style={[styles.filterView, { borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent') }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : 'transparent') }]}>
+      <View style={[styles.filterView, { borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent') }]}>
         <Pressable
           onPress={() => { setFilter(filters.UPCOMING); }}
-          style={({pressed}) => [styles.filterButton, { backgroundColor: pressed ? colors.whiteGray : (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}
+          style={({pressed}) => [styles.filterButton, { backgroundColor: pressed ? colors.whiteGray : (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.darkBlack) }]}
         >
           {({pressed}) => (<Text style={filter === filters.UPCOMING ? styles.selectedFilterLabel : styles.unselectedFilterLabel}>UPCOMING</Text>)}
         </Pressable>
         <Pressable
           onPress={() => { setFilter(filters.PAST); }}
-          style={({pressed}) => [styles.filterButton, { backgroundColor: pressed ? colors.whiteGray : (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}
+          style={({pressed}) => [styles.filterButton, { backgroundColor: pressed ? colors.whiteGray : (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.darkBlack) }]}
         >
           {({pressed}) => (<Text style={filter === filters.PAST ? styles.selectedFilterLabel : styles.unselectedFilterLabel}>PAST</Text>)}
         </Pressable>
@@ -81,8 +79,8 @@ const ReleasesScreen = ({navigation}) => {
           renderItem={({item}) => {
             return (
               <SkeletonPlaceholder
-                backgroundColor={(colorScheme === 'light' ? colors.whiteGray : colors.lightBlack)}
-                highlightColor={(colorScheme === 'light' ? colors.white : colors.darkGray)}
+                backgroundColor={(appearanceTheme == appearanceThemes.LIGHT ? colors.whiteGray : colors.lightBlack)}
+                highlightColor={(appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.darkGray)}
                 borderRadius={0}
               >
                 <SkeletonPlaceholder.Item flexDirection="column">

@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useReducer } from 'react';
-import { Button, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { createContext, useState, useEffect, useReducer, useContext } from 'react';
+import { Button, Image, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { NavigationContainer, DefaultTheme, useNavigation, useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,16 +11,19 @@ import FavoritesScreen from './screens/FavoritesScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import SearchScreen from './screens/SearchScreen';
 import ShoeScreen from './screens/ShoeScreen';
-import useTheme from './hooks/useTheme';
+import { appearanceModes } from './constants/appearanceModes';
+import { appearanceThemes } from './constants/appearanceThemes';
 import { colors } from './constants/colors';
 
-const initalState = {
+const initialState = {
   shoes: [],
   news: [],
   favorites: [],
   isShoesLoading: true,
   isNewsLoading: true,
   isFavoritesLoading: true,
+  appearanceMode: appearanceModes.DARK,
+  appearanceTheme: appearanceThemes.DARK,
 }
 
 const reducer = (state, action) => {
@@ -37,6 +40,8 @@ const reducer = (state, action) => {
       return { ...state, favorites: [], isFavoritesLoading: true };
     case 'LOADED_FAVORITES':
       return { ...state, favorites: action.payload, isFavoritesLoading: false };
+    case 'LOADED_APPEARANCE':
+      return { ...state, appearanceMode: action.payload?.appearanceMode, appearanceTheme: action.payload?.appearanceTheme };
     default:
       return state;
   }
@@ -52,23 +57,24 @@ const TABS = {
 const Tab = createBottomTabNavigator();
 
 const TabbedScreen = () => {
+  const { appearanceTheme } = useContext(ApplicationContext);
   const navigation = useNavigation();
-  const colorScheme = useTheme();
+  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerStyle: {
-          backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+          backgroundColor: (appearanceTheme === 'light' ? colors.white : colors.lightBlack),
         },
-        headerTitleStyle: [styles.headerTitle, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }],
+        headerTitleStyle: [styles.headerTitle, { color: (appearanceTheme === 'light' ? colors.darkGray : colors.gray) }],
         headerRight: () => (
           <Pressable onPress={() => { navigation.navigate('SEARCH'); }}>
             {() => (<Image source={require('./assets/images/search.png')} style={styles.headerIcon} />)}
           </Pressable>
         ),
         tabBarStyle: {
-          backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
-          borderTopColor: (colorScheme === 'light' ? colors.lightGray : colors.lightBlack),
+          backgroundColor: (appearanceTheme === 'light' ? colors.white : colors.lightBlack),
+          borderTopColor: (appearanceTheme === 'light' ? colors.lightGray : colors.lightBlack),
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconSource;
@@ -97,13 +103,14 @@ const TabbedScreen = () => {
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initalState);
-  const colorScheme = useTheme();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const systemTheme = useColorScheme();
 
   useEffect(() => {
     loadFavorites();
     loadShoes();
     loadNews();
+    loadAppearance();
   }, []);
 
   const loadShoes = async () => {
@@ -142,15 +149,28 @@ export default function App() {
     }
   };
 
+  const loadAppearance = async () => {
+    try {
+      let storageData = await AsyncStorage.getItem('appearanceMode');
+      let mode = (storageData && typeof(storageData) == 'string') ? storageData : appearanceModes.DARK;
+      let theme = (mode == appearanceModes.SYSTEM) ? (systemTheme || appearanceThemes.DARK) : mode;
+      dispatch({
+        type: 'LOADED_APPEARANCE', payload: { appearanceMode: mode, appearanceTheme: theme }
+      });
+    } catch (error) {
+      console.error('Fetching appearance data failed with error: ' + error.message);
+    }
+  };
+
   const DarkTheme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: colors.darkBlack } };
 
   return (
-    <ApplicationContext.Provider value={{...state, loadShoes, loadNews, loadFavorites}}>
-      <NavigationContainer theme={(colorScheme === 'light' ? DefaultTheme : DarkTheme)}>
+    <ApplicationContext.Provider value={{...state, loadShoes, loadNews, loadFavorites, loadAppearance}}>
+      <NavigationContainer theme={(state.appearanceTheme === 'light' ? DefaultTheme : DarkTheme)}>
         <Stack.Navigator
           initialRouteName="TabbedScreen"
           screenOptions={{
-            headerTitleStyle: [styles.headerTitle, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }],
+            headerTitleStyle: [styles.headerTitle, { color: (state.appearanceTheme === 'light' ? colors.darkGray : colors.gray) }],
             headerBackTitleVisible: false,
             headerTintColor: colors.darkGray,
           }}

@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Image, Linking, Platform, SafeAreaView, SectionList, Share, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import useTheme from '../hooks/useTheme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ActionSheet from 'react-native-actionsheet';
+import { ApplicationContext } from '../ApplicationContext';
 import { settings } from '../constants/settings';
 import { colors } from '../constants/colors';
+import { appearanceThemes } from '../constants/appearanceThemes';
+import { appearanceModes } from '../constants/appearanceModes';
+import { getCapitalizedWord } from '../helpers/formatter';
 import { Link } from '@react-navigation/native';
 
 const SettingsScreen = ({navigation}) => {
-  const [displayedShoes, setDisplayedShoes] = useState([]);
+  const { appearanceMode, appearanceTheme, loadAppearance } = useContext(ApplicationContext);
 
-  const colorScheme = useTheme();
-
-  const DATA = [
+  let DATA = [
     {
       title: 'GENERAL',
       data: [
         { text: settings.APP_NAME + ' Website', onPress: () => { openUrl(settings.WEBSITE_URL); } },
-        // TODO: implement theme change button
-        //{
-        //  text: 'Toggle theme: ' + (colorScheme === 'light' ? 'Light' : 'Dark'),
-        //  onPress: () => { Appearance.setColorScheme(colorScheme === 'light' ? 'dark' : 'light'); }
-        //}
+        { text: 'Change appearance: ' + getCapitalizedWord(appearanceMode), onPress: () => { actionSheet && actionSheet.show(); } }
       ],
     },
     {
@@ -92,6 +91,38 @@ const SettingsScreen = ({navigation}) => {
     
   }, []);
 
+  const saveAppearanceMode = async (newAppearanceMode) => {
+    try {
+      await AsyncStorage.setItem('appearanceMode', newAppearanceMode);
+      await loadAppearance();
+    } catch (error) {
+      console.error('Saving appearance mode data failed with error: ' + error.message);
+    }
+  } 
+
+  let actionSheet = null;
+  const actionOptions = {
+    LIGHT: getCapitalizedWord(appearanceModes.LIGHT),
+    DARK: getCapitalizedWord(appearanceModes.DARK),
+    SYSTEM: getCapitalizedWord(appearanceModes.SYSTEM),
+    CANCEL: 'Cancel',
+  };
+
+  const onActionOptionPress = async (index) => {
+    const actionOption = Object.values(actionOptions)[index];
+    switch (actionOption) {
+      case actionOptions.LIGHT:
+        await saveAppearanceMode(appearanceModes.LIGHT);
+        break;
+      case actionOptions.DARK:
+        await saveAppearanceMode(appearanceModes.DARK);
+        break;
+      case actionOptions.SYSTEM:
+        await saveAppearanceMode(appearanceModes.SYSTEM);
+        break;
+    };
+  };
+
   const openUrl = async function(url, fallbackUrl) {
     if (await Linking.canOpenURL(url)) {
       await Linking.openURL(url);
@@ -111,13 +142,13 @@ const SettingsScreen = ({navigation}) => {
               styles.itemContainer,
               {
                 borderTopWidth: index === 0 ? 1 : 0,
-                backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
-                borderColor: (colorScheme === 'light' ? colors.lightGray : colors.darkBlack)
+                backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.lightBlack),
+                borderColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : colors.darkBlack)
               }
             ]}
             onPress={item.onPress}
           >
-            <Text style={[styles.itemLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{item.text}</Text>
+            <Text style={[styles.itemLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{item.text}</Text>
             { item.imageSource && <Image source={item.imageSource} style={styles.itemImage} />}
           </TouchableOpacity>
         )}
@@ -126,6 +157,14 @@ const SettingsScreen = ({navigation}) => {
         }
         stickySectionHeadersEnabled={false}
         ListFooterComponent={<Text style={styles.footerLabel}>{'Version ' + settings.APP_VERSION + ' · ' + settings.DISCLAIMER_MESSAGE}</Text>}
+      />
+      <ActionSheet
+        ref={x => actionSheet = x}
+        title={'Choose option:'}
+        tintColor={colors.darkGray}
+        options={[actionOptions.LIGHT, actionOptions.DARK, actionOptions.SYSTEM, actionOptions.CANCEL]}
+        cancelButtonIndex={Object.values(actionOptions).indexOf(actionOptions.CANCEL)}
+        onPress={onActionOptionPress}
       />
     </SafeAreaView>
   );

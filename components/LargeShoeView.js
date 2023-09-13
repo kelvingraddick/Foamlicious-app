@@ -1,26 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import useTheme from '../hooks/useTheme';
+import { ApplicationContext } from '../ApplicationContext';
+import { appearanceThemes } from '../constants/appearanceThemes';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
 const LargeShoeView = (props) => {
   const { shoe } = props;
 
+  const { appearanceTheme } = useContext(ApplicationContext);
   const navigation = useNavigation();
-
-  const colorScheme = useTheme();
 
   return (
     <TouchableOpacity
       style={[
         styles.container,
         { 
-          backgroundColor: (colorScheme === 'light' ? 'transparent' : colors.lightBlack),
-          marginBottom: (colorScheme === 'light' ? 0 : 1),
-          borderBottomWidth: (colorScheme === 'light' ? 1 : 0),
-          borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent'),
+          backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? 'transparent' : colors.lightBlack),
+          marginBottom: (appearanceTheme == appearanceThemes.LIGHT ? 0 : 1),
+          borderBottomWidth: (appearanceTheme == appearanceThemes.LIGHT ? 1 : 0),
+          borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent'),
         }
       ]}
       onPress={() => { navigation.push('SHOE', { id: shoe.id }); }}
@@ -28,7 +28,7 @@ const LargeShoeView = (props) => {
       <ImageBackground source={{ uri: 'http://www.wavelinkllc.com/foamlife' + shoe.image_url_1 }} resizeMode="contain" style={styles.backgroundImage}>
         <View style={styles.headerView}>
           <View style={styles.nameView}>
-            <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
+            <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
             <Text style={styles.colorLabel}>{shoe.color}</Text>
           </View>
           <View style={styles.dateView}>

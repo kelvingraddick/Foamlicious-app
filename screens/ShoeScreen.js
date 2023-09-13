@@ -5,8 +5,8 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNCalendarEvents from "react-native-calendar-events";
 import { ApplicationContext } from '../ApplicationContext';
+import { appearanceThemes } from '../constants/appearanceThemes';
 import SmallShoeView from '../components/SmallShoeView';
-import useTheme from '../hooks/useTheme';
 import { getPrettyDate } from '../helpers/formatter';
 import { settings } from '../constants/settings';
 import { colors } from '../constants/colors';
@@ -15,13 +15,11 @@ import { months } from '../constants/months';
 const ShoeScreen = ({route, navigation}) => {
   const id = route.params.id;
 
-  const { shoes, isShoesLoading, favorites, isFavoritesLoading, loadFavorites } = useContext(ApplicationContext);
+  const { shoes, isShoesLoading, favorites, isFavoritesLoading, loadFavorites, appearanceTheme } = useContext(ApplicationContext);
 
   const [shoe, setShoe] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [suggestedShoes, setSuggestedShoes] = useState([]);
-
-  const colorScheme = useTheme();
 
   let buyNowActionSheet = null;
   const buyNowActionOptions = {
@@ -45,7 +43,7 @@ const ShoeScreen = ({route, navigation}) => {
   useEffect(() => {
     navigation.setOptions({
       headerStyle: {
-        backgroundColor: (colorScheme === 'light' ? colors.white : colors.lightBlack),
+        backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.lightBlack),
       },
       headerRight: () => (
         <Pressable onPress={onShareButtonPressed}>
@@ -210,7 +208,7 @@ const ShoeScreen = ({route, navigation}) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: (colorScheme === 'light' ? colors.white : colors.darkBlack) }]}>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.darkBlack) }]}>
       { !isShoesLoading && shoe &&
         <>
           <View style={styles.dateView}>
@@ -246,10 +244,10 @@ const ShoeScreen = ({route, navigation}) => {
             })}
           </View>
           <View style={styles.nameView}>
-            <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
+            <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
           </View>
           <View style={styles.dividerView}></View>
-          <Text style={[styles.descriptionLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{shoe.color}</Text>
+          <Text style={[styles.descriptionLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.color}</Text>
           <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]} onPress={() => { buyNowActionSheet && buyNowActionSheet.show(); }}>
             <Text style={styles.buttonViewLabel}>BUY NOW</Text>
           </Pressable>
@@ -297,8 +295,8 @@ const ShoeScreen = ({route, navigation}) => {
       }
       { isShoesLoading &&
         <SkeletonPlaceholder
-          backgroundColor={(colorScheme === 'light' ? colors.whiteGray : colors.lightBlack)}
-          highlightColor={(colorScheme === 'light' ? colors.white : colors.darkGray)}
+          backgroundColor={(appearanceTheme == appearanceThemes.LIGHT ? colors.whiteGray : colors.lightBlack)}
+          highlightColor={(appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.darkGray)}
           borderRadius={0}
         >
           <SkeletonPlaceholder.Item flexDirection="column">

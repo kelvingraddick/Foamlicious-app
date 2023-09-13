@@ -1,32 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import useTheme from '../hooks/useTheme';
+import { ApplicationContext } from '../ApplicationContext';
+import { appearanceThemes } from '../constants/appearanceThemes';
 import { getPrettyDate } from '../helpers/formatter';
 import { colors } from '../constants/colors';
 
 const SmallShoeView = (props) => {
   const { shoe, actionIconImageSource, onPress } = props;
 
-  const colorScheme = useTheme();
+  const { appearanceTheme } = useContext(ApplicationContext);
 
   return (
     <TouchableOpacity
       style={[
         styles.container,
         { 
-          backgroundColor: (colorScheme === 'light' ? 'transparent' : colors.lightBlack),
-          marginBottom: (colorScheme === 'light' ? 0 : 1),
-          borderBottomWidth: (colorScheme === 'light' ? 1 : 0),
-          borderBottomColor: (colorScheme === 'light' ? colors.lightGray : 'transparent'),
+          backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? 'transparent' : colors.lightBlack),
+          marginBottom: (appearanceTheme == appearanceThemes.LIGHT ? 0 : 1),
+          borderBottomWidth: (appearanceTheme == appearanceThemes.LIGHT ? 1 : 0),
+          borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent'),
         }
       ]}
       onPress={onPress}
     >
       <Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + shoe.image_url_1 }} resizeMode="contain" style={styles.shoeImage} />
       <View style={styles.textView}>
-        <Text style={[styles.nameLabel, { color: (colorScheme === 'light' ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
+        <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
         <Text style={styles.detailLabel}>{shoe.color}</Text>
-        <Text style={[styles.dateLabel, { color: (colorScheme === 'light' ? colors.gray : colors.darkGray) }]}>{getPrettyDate(shoe.date, shoe.hide_month === '0', shoe.hide_day === '0')}
+        <Text style={[styles.dateLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.gray : colors.darkGray) }]}>{getPrettyDate(shoe.date, shoe.hide_month === '0', shoe.hide_day === '0')}
         </Text>
       </View>
       <Image source={actionIconImageSource || require('../assets/images/arrow_right.png')} style={styles.moreImage} />
