@@ -246,8 +246,9 @@ const ShoeScreen = ({route, navigation}) => {
           <View style={styles.nameView}>
             <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
           </View>
+          <Text style={styles.colorLabel}>{shoe.color}</Text>
           <View style={styles.dividerView}></View>
-          <Text style={[styles.descriptionLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.color}</Text>
+          <Text style={[styles.descriptionLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.description}</Text>
           <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]} onPress={() => { buyNowActionSheet && buyNowActionSheet.show(); }}>
             <Text style={styles.buttonViewLabel}>BUY NOW</Text>
           </Pressable>
@@ -375,7 +376,7 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
   },
   nameLabel: {
-    marginBottom: 15,
+    paddingBottom: 0,
     alignSelf: 'center',
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
@@ -387,10 +388,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: colors.lightGray
   },
-  descriptionLabel: {
-    paddingTop: 15,
-    paddingHorizontal: 20,
+  colorLabel: {
     paddingBottom: 20,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    fontFamily: 'AvenirNext-Regular',
+    fontSize: 12,
+    color: colors.darkGray,
+  },
+  descriptionLabel: {
+    padding: 20,
     fontFamily: 'AvenirNext-Regular',
     fontSize: 12,
   },
