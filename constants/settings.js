@@ -1,5 +1,5 @@
 export const settings = {
-  APP_NAME: 'Foamlicious',
+  APP_NAME: 'Foams',
   APPLE_APP_ID: '1466460494',
   APPLE_APP_URL: 'http://itunes.com/apps/foamlicious',
   ANDROID_APP_ID: 'com.wavelinkllc.foamlicious',
@@ -7,11 +7,11 @@ export const settings = {
   APP_VERSION: '2.0',
   WEBSITE_URL: 'http://linkable.bio/foamlicious',
   PRIVACY_POLICY_URL: 'http://wavelinkllc.com/foamlicious/privacypolicy/',
-  DISCLAIMER_MESSAGE: '\'Foamlicious\' and it\'s creator are not affiliated with the \'Nike\' or \'Nike Foamposite\' brands.',
+  DISCLAIMER_MESSAGE: '\'Foams\' and it\'s creator are not affiliated with the \'Nike\' or \'Nike Foamposite\' brands.',
   EMAIL_ADDRESS: 'foamlicious1@gmail.com',
-  TWITTER_HANDLE: 'Foamlicious',
-  INSTAGRAM_HANDLE: 'Foamlicious',
+  TWITTER_HANDLE: 'Foams',
+  INSTAGRAM_HANDLE: 'Foams',
   FACEBOOK_ID: '380411992097769',
-  FACEBOOK_NAME: 'Foamlicious',
-  SNAPCHAT_NAME: 'Foamlicious',
+  FACEBOOK_NAME: 'Foams',
+  SNAPCHAT_NAME: 'Foams',
 };

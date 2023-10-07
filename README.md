@@ -1,6 +1,6 @@
-# Foamlicious mobile app
+# Foams mobile app
 
-The iOS and Android mobile application for the Foamlicious platform. Built with React Native.
+The iOS and Android mobile application for the Foams platform. Built with React Native.
 
 ## Requirements
 
