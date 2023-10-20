@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ApplicationContext } from '../ApplicationContext';
 import { appearanceThemes } from '../constants/appearanceThemes';
@@ -40,13 +40,24 @@ const SearchScreen = ({navigation}) => {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={[styles.resultView, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? 'rgba(255, 255, 255, 0.50)' : colors.lightBlack), marginBottom: (appearanceTheme == appearanceThemes.LIGHT ? 0 : 1), borderBottomWidth: (appearanceTheme == appearanceThemes.LIGHT ? 1 : 0), borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent') }]}>
+      <Pressable
+        style={[
+          styles.resultView, 
+          {
+            backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? 'rgba(255, 255, 255, 0.50)' : colors.lightBlack),
+            marginBottom: (appearanceTheme == appearanceThemes.LIGHT ? 0 : 1),
+            borderBottomWidth: (appearanceTheme == appearanceThemes.LIGHT ? 1 : 0),
+            borderBottomColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.lightGray : 'transparent')
+          }
+        ]}
+        onPress={() => { navigation.push('SHOE', { id: item.id }); }}
+      >
         <Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + item.image_url_1 }} resizeMode="contain" style={styles.image} />
         <View style={styles.textView}>
           <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{item.name}</Text>
           <Text style={styles.detailLabel}>{item.color}</Text>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
