@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ActivityIndicator, Alert, Dimensions, Image, Linking, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
-import ActionSheet from 'react-native-actionsheet';
+import ShareActionSheet from 'react-native-actionsheet';
+import BuyNowActionSheet from 'react-native-actionsheet';
+import ApparelActionSheet from 'react-native-actionsheet';
+import CalendarActionSheet from 'react-native-actionsheet';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNCalendarEvents from "react-native-calendar-events";
@@ -8,7 +11,6 @@ import { ApplicationContext } from '../ApplicationContext';
 import { appearanceThemes } from '../constants/appearanceThemes';
 import SmallShoeView from '../components/SmallShoeView';
 import { getPrettyDate } from '../helpers/formatter';
-import { settings } from '../constants/settings';
 import { colors } from '../constants/colors';
 import { months } from '../constants/months';
 
@@ -21,14 +23,12 @@ const ShoeScreen = ({route, navigation}) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [suggestedShoes, setSuggestedShoes] = useState([]);
 
-  let buyNowActionSheet = null;
-  const buyNowActionOptions = {
+  const sellerActionOptions = {
     STOCKX: 'StockX.com',
     GOAT: 'Goat.com',
     CANCEL: 'Cancel',
   };
 
-  let apparelActionSheet = null;
   const apparelActionOptions = {
     //DOPESNEAKERTEES: 'DopeSneakerTees.com', // site is down
     EBAY: 'Ebay.com',
@@ -37,7 +37,6 @@ const ShoeScreen = ({route, navigation}) => {
     CANCEL: 'Cancel',
   };
 
-  let calendarActionSheet = null;
   const [calendars, setCalendars] = useState([]);
 
   useEffect(() => {
@@ -46,7 +45,7 @@ const ShoeScreen = ({route, navigation}) => {
         backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.white : colors.lightBlack),
       },
       headerRight: () => (
-        <Pressable onPress={onShareButtonPressed}>
+        <Pressable onPress={() => { this.ShareActionSheet && this.ShareActionSheet.show(); }}>
           {() => (<Image source={require('../assets/images/share.png')} style={styles.headerIcon} />)}
         </Pressable>
       ),
@@ -67,7 +66,7 @@ const ShoeScreen = ({route, navigation}) => {
   // when calendars are found (and state updated), open calendar select menu
   useEffect(() => {
     if (calendars && calendars.length > 0) {
-      calendarActionSheet && calendarActionSheet.show();
+      this.CalendarActionSheet && this.CalendarActionSheet.show();
     }
   }, [calendars]);
 
@@ -82,27 +81,6 @@ const ShoeScreen = ({route, navigation}) => {
   const onImageScroll = (scrollOffset) => {
     let numberOfImagesScrolled = Math.round(scrollOffset / Dimensions.get('window').width);
     setCurrentImageIndex(numberOfImagesScrolled);
-  };
-
-  const onShareButtonPressed = async () => {
-    try {
-      const url = Platform.OS === 'ios' ? settings.APPLE_APP_URL : settings.ANDROID_APP_URL;
-      const message = 'Check out ' + shoe.name + ' ' + shoe.color + ' on Foams App! ' + url;
-      await Share.share(
-        {
-          message: message,
-          url: url,
-          title: message,
-        },
-        {
-          dialogTitle: message,
-          subject: message,
-          tintColor: colors.darkGray 
-        }
-      );
-    } catch (error) {
-      console.error('Sharing shoe failed with error: ' + error.message);
-    }
   };
 
   const onFavoriteButtonPressed = async () => {
@@ -140,17 +118,37 @@ const ShoeScreen = ({route, navigation}) => {
     });
   };
 
+  const onShareActionOptionPress = async (index) => {
+    const url = getSellerUrl(Object.values(sellerActionOptions)[index]);
+    if (!url) return;
+    try {
+      const message = 'Check out ' + shoe.name + ' ' + shoe.color + ' at: ' + url;
+      await Share.share(
+        { message: message, url: url, title: message },
+        { dialogTitle: message, subject: message, tintColor: colors.darkGray }
+      );
+    } catch (error) {
+      console.error('Sharing shoe failed with error: ' + error.message);
+    }
+  };
+
   const onBuyNowActionOptionPress = async (index) => {
+    const url = getSellerUrl(Object.values(sellerActionOptions)[index]);
+    if (url) Linking.openURL(url);
+  };
+
+  const getSellerUrl = (sellerActionOption) => {
+    let url = null;
     const searchQueryString = getSearchQueryString(shoe.name + '+' + shoe.color);
-    const actionOption = Object.values(buyNowActionOptions)[index];
-    switch (actionOption) {
-      case buyNowActionOptions.STOCKX:
-        Linking.openURL((shoe.stock_x_url && shoe.stock_x_url !== '') ? shoe.stock_x_url : 'https://stockx.com/search?s=' + searchQueryString);
+    switch (sellerActionOption) {
+      case sellerActionOptions.STOCKX:
+        url = (shoe.stock_x_url && shoe.stock_x_url !== '') ? shoe.stock_x_url : 'https://stockx.com/search?s=' + searchQueryString;
         break;
-      case buyNowActionOptions.GOAT:
-        Linking.openURL((shoe.goat_url && shoe.goat_url !== '') ? shoe.goat_url : 'https://www.goat.com/search?query=' + searchQueryString);
+      case sellerActionOptions.GOAT:
+        url = (shoe.goat_url && shoe.goat_url !== '') ? shoe.goat_url : 'https://www.goat.com/search?query=' + searchQueryString;
         break;
     };
+    return url;
   };
 
   const getSearchQueryString = (rawString) => {
@@ -249,7 +247,7 @@ const ShoeScreen = ({route, navigation}) => {
           <Text style={styles.colorLabel}>{shoe.color}</Text>
           <View style={styles.dividerView}></View>
           <Text style={[styles.descriptionLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.description}</Text>
-          <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]} onPress={() => { buyNowActionSheet && buyNowActionSheet.show(); }}>
+          <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]} onPress={() => { this.BuyNowActionSheet && this.BuyNowActionSheet.show(); }}>
             <Text style={styles.buttonViewLabel}>BUY NOW</Text>
           </Pressable>
           <Pressable style={[styles.buttonView, { backgroundColor: colors.darkGray }]} onPress={onFavoriteButtonPressed}>
@@ -265,27 +263,35 @@ const ShoeScreen = ({route, navigation}) => {
           {suggestedShoes.map((suggestedShoe, index) => {
             return (<SmallShoeView shoe={suggestedShoe} onPress={() => { navigation.push('SHOE', { id: suggestedShoe.id }); }} />)
           })}
-          <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E', marginBottom: 50 }]} onPress={() => { apparelActionSheet && apparelActionSheet.show(); }}>
+          <Pressable style={[styles.buttonView, { backgroundColor: '#5E5E5E', marginBottom: 50 }]} onPress={() => { this.ApparelActionSheet && this.ApparelActionSheet.show(); }}>
             <Text style={styles.buttonViewLabel}>FIND MATCHING APPAREL</Text>
           </Pressable>
-          <ActionSheet
-            ref={x => buyNowActionSheet = x}
+          <ShareActionSheet
+            ref={x => this.ShareActionSheet = x}
+            title={'Choose seller to share:'}
+            tintColor={colors.darkGray}
+            options={Object.values(sellerActionOptions)}
+            cancelButtonIndex={Object.values(sellerActionOptions).indexOf(sellerActionOptions.CANCEL)}
+            onPress={onShareActionOptionPress}
+          />
+          <BuyNowActionSheet
+            ref={x => this.BuyNowActionSheet = x}
             title={'Choose seller'}
             tintColor={colors.darkGray}
-            options={Object.values(buyNowActionOptions)}
-            cancelButtonIndex={Object.values(buyNowActionOptions).indexOf(buyNowActionOptions.CANCEL)}
+            options={Object.values(sellerActionOptions)}
+            cancelButtonIndex={Object.values(sellerActionOptions).indexOf(sellerActionOptions.CANCEL)}
             onPress={onBuyNowActionOptionPress}
           />
-          <ActionSheet
-            ref={x => apparelActionSheet = x}
+          <ApparelActionSheet
+            ref={x => this.ApparelActionSheet = x}
             title={'Choose seller'}
             tintColor={colors.darkGray}
             options={Object.values(apparelActionOptions)}
             cancelButtonIndex={Object.values(apparelActionOptions).indexOf(apparelActionOptions.CANCEL)}
             onPress={onApparelActionOptionPress}
           />
-          <ActionSheet
-            ref={x => calendarActionSheet = x}
+          <CalendarActionSheet
+            ref={x => this.CalendarActionSheet = x}
             title={'Choose calendar to add event to:'}
             tintColor={colors.darkGray}
             options={calendars.map(calendar => calendar.title).concat('Cancel')}
