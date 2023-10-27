@@ -55,6 +55,11 @@ const ShoeScreen = ({route, navigation}) => {
   useEffect(() => {
     let currentShoe = shoes.find(shoe => shoe.id === id) || {};
     currentShoe.isFavorited = favorites.find(favorite => favorite.id === currentShoe.id) !== undefined;
+    let shoeDate = new Date(currentShoe.date + 'T00:00:00.000-05:00');
+    currentShoe.formattedDate = 
+      (currentShoe.hide_month === '0' ? (months.long[shoeDate.getMonth()] + ' ') : '') +
+      (currentShoe.hide_day === '0' ? (shoeDate.getDate() + ', ') : '') +
+      shoeDate.getFullYear();
     setShoe(currentShoe);
     navigation.setOptions({ headerTitle: currentShoe.name });
 
@@ -241,11 +246,15 @@ const ShoeScreen = ({route, navigation}) => {
               return (<Text style={[styles.bulletText, { color: index === currentImageIndex ? colors.darkGray : colors.lightGray }]}>&middot;</Text>);
             })}
           </View>
-          <View style={styles.nameView}>
+          <View style={[styles.infoView, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.whiteGray : colors.black) }]}>
             <Text style={[styles.nameLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.name}</Text>
+            <Text style={[styles.infoLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>
+              {shoe.color}
+              {shoe.style_code && <Text>{'\n' + shoe.style_code}</Text>}
+              {'\n' + shoe.formattedDate}
+              {shoe.price && <Text>{'\n' + shoe.price}</Text>}
+            </Text>
           </View>
-          <Text style={styles.colorLabel}>{shoe.color}</Text>
-          <View style={styles.dividerView}></View>
           <Text style={[styles.descriptionLabel, { color: (appearanceTheme == appearanceThemes.LIGHT ? colors.darkGray : colors.gray) }]}>{shoe.description}</Text>
           <Pressable style={[styles.buttonView, { backgroundColor: colors.blue }]} onPress={() => { this.BuyNowActionSheet && this.BuyNowActionSheet.show(); }}>
             <Text style={styles.buttonViewLabel}>BUY NOW</Text>
@@ -382,8 +391,8 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
   },
   nameLabel: {
-    paddingBottom: 0,
-    alignSelf: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 5,
     fontFamily: 'AvenirNext-Bold',
     fontSize: 14,
     fontWeight: 'bold',
@@ -394,13 +403,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: colors.lightGray
   },
-  colorLabel: {
-    paddingBottom: 20,
+  infoView: {
+    paddingVertical: 20,
+  },
+  infoLabel: {
     paddingHorizontal: 20,
-    alignSelf: 'center',
     fontFamily: 'AvenirNext-Regular',
     fontSize: 12,
-    color: colors.darkGray,
   },
   descriptionLabel: {
     padding: 20,
