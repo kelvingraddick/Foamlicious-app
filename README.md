@@ -40,16 +40,25 @@ How you run the project for iOS depends on the Mac processor:
     $ npx react-native run-android
 * A file called  **launchPackager.command** should be automatically opened in a command window to run Metro (if it gets opened in a text editor you'll need to run in manually).
 
-## Build for production
+## Deploying the project
 
 ### iOS
-Archive and upload through XCode; make sure you have the required certs and provisioning profiles on your machine
+1. Open the project in Xcode (via `ios` folder)
+2. Bump the build version
+    - From Xcode, select the 
+3. 'Archive' (build) the app
+    - From Xcode, go to 'Product' -> 'Archive'
+    - Make sure you have the required certs and provisioning profiles on your machine
+4. Upload the build to Apple Connect
+    - From Xcode, go to 'Window' -> 'Organizer'
 
 ### Android 
-Run the following:
-    
-    $ cd android
-    $ ./gradlew bundleRelease
+Run the following via the command line:
+
+    $ npx react-native build-android --mode=release
+
+The file that can be uploaded to the [Google Play Console](https://play.google.com) will be generated to:<br />
+`~/android/app/build/outputs/bundle/release/app-release.aab`
 
 Make sure you have the required private signing cert on your machine and is pointed to in the local gradle properties file.
 More instructions are are in the React Native ["Publishing to Google Play Store" documentation](http://reactnative.dev/docs/signed-apk-android).
