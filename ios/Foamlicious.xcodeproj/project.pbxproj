@@ -16,6 +16,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B62CD4812AFB6E96000BF2A3 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD4802AFB6E96000BF2A3 /* NotificationService.swift */; };
 		B62CD4852AFB6E96000BF2A3 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B62CD47E2AFB6E96000BF2A3 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B6A6C9D22B353B510091429D /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = B6A6C9D12B353B510091429D /* splash.png */; };
 		B6DC0F73C8607E88DBFB592A /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4355B7DBDD42F799AB951FEF /* libPods-OneSignalNotificationServiceExtension.a */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,7 @@
 		B62CD4802AFB6E96000BF2A3 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		B62CD4822AFB6E96000BF2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B62CD48A2AFB6F82000BF2A3 /* Foamlicious.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Foamlicious.entitlements; path = Foamlicious/Foamlicious.entitlements; sourceTree = "<group>"; };
+		B6A6C9D12B353B510091429D /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		E03EB45D0BA38B2E3DA329D8 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE735A924C17AAD0248575DE /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 		13B07FAE1A68108700A75B9A /* Foamlicious */ = {
 			isa = PBXGroup;
 			children = (
+				B6A6C9D12B353B510091429D /* splash.png */,
 				B62CD48A2AFB6F82000BF2A3 /* Foamlicious.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -323,6 +326,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				B6A6C9D22B353B510091429D /* splash.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

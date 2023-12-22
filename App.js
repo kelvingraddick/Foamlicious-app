@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationContext } from './ApplicationContext';
+import SplashScreen from './screens/SplashScreen';
 import ReleasesScreen from './screens/ReleasesScreen';
 import NewsScreen from './screens/NewsScreen';
 import FavoritesScreen from './screens/FavoritesScreen';
@@ -168,14 +169,15 @@ export default function App() {
     <ApplicationContext.Provider value={{...state, loadShoes, loadNews, loadFavorites, loadAppearance}}>
       <NavigationContainer theme={(state.appearanceTheme === 'light' ? DefaultTheme : DarkTheme)}>
         <Stack.Navigator
-          initialRouteName="TabbedScreen"
+          initialRouteName="SplashScreen"
           screenOptions={{
             headerTitleStyle: [styles.headerTitle, { color: (state.appearanceTheme === 'light' ? colors.darkGray : colors.gray) }],
             headerBackTitleVisible: false,
             headerTintColor: colors.darkGray,
           }}
         >
-          <Stack.Screen name="TabbedScreen" component={TabbedScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="TabbedScreen" component={TabbedScreen} options={{ headerShown: false, cardStyleInterpolator: ({ current }) => ({ cardStyle: { opacity: current.progress }}) }} />
           <Stack.Screen name="SEARCH" component={SearchScreen} />
           <Stack.Screen name="SHOE" component={ShoeScreen} />
         </Stack.Navigator>
