@@ -53,9 +53,10 @@ How you run the project for iOS depends on the Mac processor:
     - From Xcode, go to 'Window' -> 'Organizer'
 
 ### Android 
-Run the following via the command line:
-
-    $ npx react-native build-android --mode=release
+Run the following:
+    
+    $ cd android
+    $ ./gradlew bundleRelease
 
 The file that can be uploaded to the [Google Play Console](https://play.google.com) will be generated to:<br />
 `~/android/app/build/outputs/bundle/release/app-release.aab`
