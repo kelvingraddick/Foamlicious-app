@@ -73,6 +73,7 @@ const TabbedScreen = () => {
             {() => (<Image source={require('./assets/images/search.png')} style={styles.headerIcon} />)}
           </Pressable>
         ),
+        tabBarLabelPosition: 'below-icon',
         tabBarStyle: {
           backgroundColor: (appearanceTheme === 'light' ? colors.white : colors.lightBlack),
           borderTopColor: (appearanceTheme === 'light' ? colors.lightGray : colors.lightBlack),
