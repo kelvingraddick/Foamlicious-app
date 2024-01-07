@@ -48,6 +48,8 @@
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app needs calendar permissions to add events for shoe release dates</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>This app needs calendar permissions to add events for shoe release dates</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This allows you to use your camera to take photos of shoes and barcodes.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
