@@ -67,6 +67,7 @@ const ReleasesScreen = ({navigation}) => {
       </View>
       { !isShoesLoading &&
         <FlatList
+          style={styles.list}
           data={displayedShoes}
           keyExtractor={item => item.id.toString()}
           renderItem={({item}) => <SmallShoeView shoe={item} onPress={() => { navigation.push('SHOE', { id: item.id }); }} />}
@@ -105,6 +106,9 @@ const ReleasesScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
 
+  },
+  list: {
+    marginBottom: 50,
   },
   headerIcon: {
     resizeMode: 'contain',
