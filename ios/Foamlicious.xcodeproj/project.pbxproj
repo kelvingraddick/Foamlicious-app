@@ -618,7 +618,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Kelvin Graddick (Z4AJGLAS2A)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Kelvin Graddick (Z4AJGLAS2A)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T964YG7BYP;
 				ENABLE_BITCODE = NO;
@@ -630,7 +630,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -659,7 +659,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution: FOAMLICIOUS LLC (T964YG7BYP)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: FOAMLICIOUS LLC (T964YG7BYP)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T964YG7BYP;
 				INFOPLIST_FILE = Foamlicious/Info.plist;
@@ -670,7 +670,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
