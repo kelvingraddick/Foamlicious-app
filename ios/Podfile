@@ -1,5 +1,9 @@
-require_relative '../node_modules/react-native/scripts/react_native_pods'
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
@@ -30,8 +34,6 @@ target 'Foamlicious' do
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.
-    # Upcoming versions of React Native may rely on get_default_flags(), but
-    # we make it explicit here to aid in the React Native upgrade process.
     :hermes_enabled => flags[:hermes_enabled],
     :fabric_enabled => flags[:fabric_enabled],
     # Enables Flipper.
@@ -49,12 +51,26 @@ target 'Foamlicious' do
   end
 
   post_install do |installer|
+    # Keep the explicit RN path for 0.72+ pod helpers.
     react_native_post_install(
       installer,
-      # Set `mac_catalyst_enabled` to `true` in order to apply patches
-      # necessary for Mac Catalyst builds
+      config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+
+    installer.pods_project.targets.each do |target|
+      next unless target.name == 'Yoga'
+
+      target.build_configurations.each do |build_configuration|
+        existing_flags = build_configuration.build_settings['OTHER_CPLUSPLUSFLAGS'] || '$(inherited)'
+        flags = existing_flags.is_a?(Array) ? existing_flags : [existing_flags]
+        unless flags.include?('-Wno-error=deprecated-literal-operator')
+          flags << '-Wno-error=deprecated-literal-operator'
+        end
+        build_configuration.build_settings['OTHER_CPLUSPLUSFLAGS'] = flags
+      end
+    end
+
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
