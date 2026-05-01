@@ -95,7 +95,7 @@ android {
 
     namespace "com.wavelinkllc.foamlicious"
     defaultConfig {
-        applicationId "com.wavelinkllc.foamlicious"
+        applicationId "com.wavelinkllc.foamsapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 14
