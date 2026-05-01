@@ -8,7 +8,6 @@ import { colors } from '../constants/colors';
 import { appearanceThemes } from '../constants/appearanceThemes';
 import { appearanceModes } from '../constants/appearanceModes';
 import { getCapitalizedWord } from '../helpers/formatter';
-import { Link } from '@react-navigation/native';
 
 const SettingsScreen = ({navigation}) => {
   const { appearanceMode, appearanceTheme, loadAppearance } = useContext(ApplicationContext);
@@ -124,10 +123,19 @@ const SettingsScreen = ({navigation}) => {
   };
 
   const openUrl = async function(url, fallbackUrl) {
-    if (await Linking.canOpenURL(url)) {
+    try {
       await Linking.openURL(url);
-    } else if (await Linking.canOpenURL(fallbackUrl)) {
-      await Linking.openURL(fallbackUrl);
+    } catch (error) {
+      if (!fallbackUrl) {
+        console.error('Opening URL failed with error: ' + error.message);
+        return;
+      }
+
+      try {
+        await Linking.openURL(fallbackUrl);
+      } catch (fallbackError) {
+        console.error('Opening fallback URL failed with error: ' + fallbackError.message);
+      }
     }
   };
 
