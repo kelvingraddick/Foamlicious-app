@@ -4,7 +4,7 @@ export const settings = {
   APPLE_APP_URL: 'https://apps.apple.com/us/app/foams-app/id1466460494',
   ANDROID_APP_ID: 'com.wavelinkllc.foamsapp',
   ANDROID_APP_URL: 'http://play.google.com/store/apps/details?id=com.wavelinkllc.foamsapp',
-  APP_VERSION: '2.0',
+  APP_VERSION: '2.1',
   WEBSITE_URL: 'http://linkable.bio/foamlicious',
   PRIVACY_POLICY_URL: 'http://wavelinkllc.com/foamlicious/privacypolicy/',
   DISCLAIMER_MESSAGE: '\'Foams\' and it\'s creator are not affiliated with the \'Nike\' or \'Nike Foamposite\' brands.',
