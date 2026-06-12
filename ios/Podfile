@@ -25,6 +25,24 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+def strip_bitcode_from_hermes
+  hermes_binary_path = File.join(
+    __dir__,
+    'Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes'
+  )
+
+  unless File.exist?(hermes_binary_path)
+    Pod::UI.warn "Hermes binary not found at #{hermes_binary_path}; skipping bitcode strip"
+    return
+  end
+
+  bitcode_strip_path = Pod::Executable.execute_command('xcrun', ['-find', 'bitcode_strip']).strip
+  Pod::UI.puts 'Stripping bitcode from Hermes for App Store upload'.green
+  unless system(bitcode_strip_path, hermes_binary_path, '-r', '-o', hermes_binary_path)
+    raise "Failed to strip bitcode from Hermes at #{hermes_binary_path}"
+  end
+end
+
 target 'Foamlicious' do
   config = use_native_modules!
 
@@ -57,6 +75,7 @@ target 'Foamlicious' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+    strip_bitcode_from_hermes
 
     installer.pods_project.targets.each do |target|
       next unless target.name == 'Yoga'
