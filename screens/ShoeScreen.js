@@ -68,6 +68,10 @@ const ShoeScreen = ({route, navigation}) => {
     setSuggestedShoes(currentSuggestedShoes);
   }, [shoes, favorites]);
 
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [id]);
+
   // when calendars are found (and state updated), open calendar select menu
   useEffect(() => {
     if (calendars && calendars.length > 0) {
@@ -76,11 +80,21 @@ const ShoeScreen = ({route, navigation}) => {
   }, [calendars]);
 
   const getImageUrls = () => {
-    return shoe ? [shoe.image_url_1, shoe.image_url_2, shoe.image_url_3] : [];
+    const imageUrls = shoe ? [
+      shoe.image_url_1,
+      shoe.image_url_2,
+      shoe.image_url_3,
+      shoe.image_url_4,
+      shoe.image_url_5,
+      shoe.image_url_6,
+    ] : [];
+    return imageUrls
+      .filter(imageUrl => typeof imageUrl === 'string' && imageUrl.trim() !== '')
+      .map(imageUrl => imageUrl.trim());
   };
 
   const getNumberOfImages = () => {
-    return getImageUrls().filter(imageUrl => imageUrl).length;
+    return getImageUrls().length;
   };
 
   const onImageScroll = (scrollOffset) => {
@@ -238,12 +252,19 @@ const ShoeScreen = ({route, navigation}) => {
             scrollEventThrottle={200}
           >
             {getImageUrls().map((imageUrl, index) => {
-              return (<Image source={{ uri: 'http://www.wavelinkllc.com/foamlife' + imageUrl }} resizeMode="contain" style={styles.image} />);
+              return (
+                <Image
+                  key={`${index}-${imageUrl}`}
+                  source={{ uri: 'http://www.wavelinkllc.com/foamlife' + imageUrl }}
+                  resizeMode="contain"
+                  style={styles.image}
+                />
+              );
             })}
           </ScrollView>
           <View style={styles.bulletsView}>
             {[...Array(getNumberOfImages())].map((item, index) => {
-              return (<Text style={[styles.bulletText, { color: index === currentImageIndex ? colors.darkGray : colors.lightGray }]}>&middot;</Text>);
+              return (<Text key={index} style={[styles.bulletText, { color: index === currentImageIndex ? colors.darkGray : colors.lightGray }]}>&middot;</Text>);
             })}
           </View>
           <View style={[styles.infoView, { backgroundColor: (appearanceTheme == appearanceThemes.LIGHT ? colors.whiteGray : colors.black) }]}>
